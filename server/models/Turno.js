@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema({
+ export const turnSchema = new mongoose.Schema({
   name: { type: String, required: true },
   phone: { type: String, required: true },
   day: { type: Date, required: true },
   hour: { type: String, required: true },
-  corte: ["pelo"|"barba"|"ambos"],
+  corte: {type: String, enum: ['pelo', 'barba', 'ambos'], required: true}
 });
 
-export default mongoose.model("Turno", postSchema);
+export default mongoose.model("Turno", turnSchema);
