@@ -1,5 +1,6 @@
 import { parseISO, toDate } from "date-fns";
 import Turno, { turnSchema } from "../models/Turno.js";
+import Day from "../models/UnavailableDays.js";
 import {
   availablesHours,
   getAvailableTurns,
@@ -51,6 +52,17 @@ export const createTurn = async (req, res) => {
     // Utilizar parseISO de date-fns para analizar la fecha en formato ISO 8601 (AAAA-MM-DD)
     const parsedDay = parseISO(day);
     console.log(parsedDay);
+
+    // Verificar que el día esté habilitado
+    const dayEnabled = await Day.findOne({ date: parsedDay, enabled: true });
+    console.log(dayEnabled);
+    if (!dayEnabled) {
+      return res.status(400).json({
+        error: `No trabajamos el dia ${parsedDay.toLocaleDateString("es-ES", {
+          weekday: "long",
+        })}. Por favor, seleccione un día hábil.`,
+      });
+    }
 
     // Formar el nombre de la colección según el año y mes del turno
     const collectionName = `Turnos_${parsedDay.getFullYear()}_${
@@ -139,3 +151,36 @@ export const deleteTurn = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 }
+
+
+// Cancel Working days
+
+export const cancelWorkingDays = async (req, res) => {
+  try {
+    const { date } = req.body;
+    console.log(date);
+
+    // Convertir la fecha recibida en un objeto Date
+    const parsedDate = parseISO(date);
+    console.log(parsedDate);
+
+    const formattedDay = toDate(parsedDate, "dd-MM-yyyy");
+    console.log(formattedDay);
+
+    // Buscar si el dia ya esta cancelado
+    const dayExist = await Day.findOne({ date: parsedDate });
+
+    if (dayExist) {
+      return res.status(404).json({ message: "Este dia ya esta cancelado" });
+    }
+
+    // Deshabilitar el día (enabled = false)
+    const Newday = new Day({ date: formattedDay, enabled: false });
+    console.log(Newday);
+    await Newday.save();
+
+    return res.json({ message: `El dia: ${parsedDate} fue cancelado` });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
