@@ -10,6 +10,28 @@ export const cancelHours = async (req, res) => {
     // Convertir la fecha en un objeto Date
     const parsedDate = parseISO(date);
 
+    //Verificar que el dia no sea domingo o lunes
+    if (
+      format(parsedDate, "eeee", { locale: es }) === "domingo" ||
+      format(parsedDate, "eeee", { locale: es }) === "lunes"
+    ) {
+      return res.status(400).json({
+        message: `No se puede cancelar horas los dias domingos o lunes.`,
+      });
+    }
+
+    // Verificar si el día está en la colección UnavailableDays
+    const isUnavailableDay = await UnavailableDays.exists({ date: parsedDate });
+    if (isUnavailableDay) {
+      return res.status(400).json({
+        message: `No se puede cancelar horas en el dia ${format(
+          parsedDate,
+          "eeee d MMMM",
+          { locale: es }
+        )} ya que está deshabilitado.`,
+      });
+    }
+
     //Verificar que el intervalo de tiempo entre startHour y endHour no este ya cancelado
     const cancelledHours = await CancelledHours.find({ date: parsedDate });
     const cancelledHoursIntervals = cancelledHours.map((cancelledHour) => {
@@ -34,23 +56,19 @@ export const cancelHours = async (req, res) => {
 
     if (isIntervalAlreadyCancelled) {
       return res.status(400).json({
-        message: `El intervalo de horas desde ${startHour} hasta ${endHour} del día ${format(
-          parsedDate,
-          "eeee d MMMM",
-          { locale: es }
-        )} ya está cancelado.`,
-      });
-    }
-
-    // Verificar si el día está en la colección UnavailableDays
-    const isUnavailableDay = await UnavailableDays.exists({ date: parsedDate });
-    if (isUnavailableDay) {
-      return res.status(400).json({
-        message: `No se puede cancelar horas en el dia ${format(
-          parsedDate,
-          "eeee d MMMM",
-          { locale: es }
-        )} ya que está deshabilitado.`,
+        message:
+          "El intervalo de horas que intentas cancelar ya está ocupado por otros turnos cancelados. Vos estas intentado poner un turno de " +
+          startHour +
+          " a " +
+          endHour +
+          " cuando los turnos cancelados son: " +
+          cancelledHoursIntervals.map(
+            (interval) =>
+              format(interval.startTime, "HH:mm", { locale: es }) +
+              " a " +
+              format(interval.endTime, "HH:mm", { locale: es })
+          ) +
+          ". Los turnos no se pueden superponer.",
       });
     }
 
@@ -94,33 +112,49 @@ export const updateCancelledHours = async (req, res) => {
     // Convertir la fecha en un objeto Date
     const parsedDate = parseISO(date);
 
-    // Verificar si el intervalo de horas cancelado existe en la base de datos
-    const cancelledHour = await CancelledHours.findById(id);
+    const existingCancelledHours = await CancelledHours.find({
+      date: parsedDate,
+      $or: [
+        {
+          $and: [
+            { startHour: { $lte: startHour } },
+            { endHour: { $gte: startHour } },
+          ],
+        },
+        {
+          $and: [
+            { startHour: { $lte: endHour } },
+            { endHour: { $gte: endHour } },
+          ],
+        },
+        {
+          $and: [
+            { startHour: { $gte: startHour } },
+            { endHour: { $lte: endHour } },
+          ],
+        },
+      ],
+    });
 
-    if (!cancelledHour) {
-      return res.status(404).json({
-        message: `El intervalo de horas cancelado con ID ${id} no fue encontrado.`,
-      });
-    }
-    if (
-      startHour === cancelledHour.startHour &&
-      endHour === cancelledHour.endHour
-    ) {
+    if (existingCancelledHours.length > 1) {
       return res.status(400).json({
-        message: "Tienes que modificar el horario para poder actualizarlo.",
+        message:
+          "El intervalo de horas se superpone con otro intervalo cancelado existente.",
       });
     }
 
-    // Actualizar el intervalo de horas cancelado en la base de datos
-    const updatedCancelledHour = await CancelledHours.findByIdAndUpdate(
-      id,
-      {
-        date: parsedDate,
-        startHour,
-        endHour,
-      },
-      { overwrite: false }
-    );
+    // Si no hay superposición, actualizar el intervalo de horas cancelado en la base de datos
+    if (cancelledHour) {
+      await CancelledHours.findByIdAndUpdate(
+        id,
+        {
+          date: parsedDate,
+          startHour,
+          endHour,
+        },
+        { overwrite: false }
+      );
+    }
 
     return res.json({
       message: `El intervalo de horas desde ${cancelledHour.startHour} hasta ${
@@ -179,7 +213,22 @@ export const deleteCancelledHours = async (req, res) => {
           parsedDate,
           "eeee d MMMM",
           { locale: es }
-        )} estan nuevamente disponibles.`,
+        )} estan nuevamente disponibles.
+        Los siguientes turnos estan nuevamente disponibles: ${cancelledHours.map(
+          //format cancelledHours with paseISO
+          (cancelledHour) =>
+            format(
+              parseISO(`2000-01-01T${cancelledHour.startHour}`),
+              "HH:mm",
+              { locale: es }
+            ) +
+            " a " +
+            format(
+              parseISO(`2000-01-01T${cancelledHour.endHour}`),
+              "HH:mm",
+              { locale: es }
+            )
+            )}`,
       });
     }
   } catch (error) {
@@ -187,4 +236,28 @@ export const deleteCancelledHours = async (req, res) => {
   }
 };
 
-//crear controlador para eliminar intervalor por id
+export const deleteCancelledHoursById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const cancelledHour = await CancelledHours.findById(id);
+    if (!cancelledHour) {
+      return res.status(404).json({ message: "No se encontró el documento." });
+    }
+
+    const { date, startHour, endHour } = cancelledHour;
+
+    // Eliminar el documento de las horas canceladas en la base de datos
+    await CancelledHours.findByIdAndDelete(id);
+
+    return res.json({
+      message: `El intervalo de horas desde las ${startHour} hasta ${endHour} del día ${format(
+        date,
+        "eeee d MMMM",
+        { locale: es }
+      )} ha sido eliminado.`,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};

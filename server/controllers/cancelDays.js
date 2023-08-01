@@ -95,3 +95,34 @@ export const deleteCancelledDays = async (req, res) => {
   }
 }
 
+export const deleteCancelledDayById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Verificar que se haya proporcionado un ID válido
+    if (!id) {
+      return res.status(400).json({ message: "Falta proporcionar el ID del turno a eliminar." });
+    }
+
+    // Buscar el turno por su ID
+    const turno = await UnavailableDays.findById(id);
+
+    // Verificar si el turno existe en la base de datos
+    if (!turno) {
+      return res.status(404).json({ message: "No se encontró el turno con el ID proporcionado." });
+    }
+
+    // Guardar el día del turno parseado antes de eliminarlo
+    const deletedDate = turno.date
+    console.log(deletedDate);
+
+    // Eliminar el turno de la base de datos
+    await UnavailableDays.findByIdAndDelete(id);
+
+    return res.json({
+      message: `El turno del día ${format(deletedDate, "eeee d 'de' MMMM", { locale: es })} fue eliminado exitosamente.`,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
