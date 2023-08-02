@@ -1,7 +1,19 @@
 import es from "date-fns/locale/es/index.js";
-import UnavailableDays from "../models/UnavailableDays.js";
+import UnavailableDays from "../models/days.model.js";
 import { addDays, format, getDay, parseISO, toDate } from "date-fns";
+import { isDateInPast } from "../utils/date.js";
 
+export const getCancelledWorkingDays = async (req, res) => {
+  try {
+    const cancelledDays = await UnavailableDays.find({ enabled: false });
+    if (cancelledDays.length === 0) {
+      return res.status(404).json({ message: "No hay dias cancelados" });
+    }
+    return res.json(cancelledDays);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 export const cancelWorkingDays = async (req, res) => {
   try {
@@ -10,6 +22,12 @@ export const cancelWorkingDays = async (req, res) => {
     // Convertir las fechas de inicio y fin en objetos Date
     const parsedStartDate = parseISO(startDate);
     const parsedEndDate = parseISO(endDate);
+
+    if (isDateInPast(parsedStartDate)) {
+      return res.status(400).json({
+        message: "No es posible cancelar un dia de una fecha que ya ha pasado.",
+      });
+    }
 
     // Iterar sobre los días del intervalo y realizar la cancelación para cada día
     const cancelledDays = [];
@@ -40,7 +58,7 @@ export const cancelWorkingDays = async (req, res) => {
       }
     }
 
-    if(cancelledDays.length === 1) {
+    if (cancelledDays.length === 1) {
       return res.json({
         message: `El día ${format(cancelledDays[0], "eeee d 'de' MMMM", {
           locale: es,
@@ -93,34 +111,30 @@ export const deleteCancelledDays = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
 export const deleteCancelledDayById = async (req, res) => {
   try {
     const id = req.params.id;
-
-    // Verificar que se haya proporcionado un ID válido
-    if (!id) {
-      return res.status(400).json({ message: "Falta proporcionar el ID del turno a eliminar." });
-    }
-
-    // Buscar el turno por su ID
     const turno = await UnavailableDays.findById(id);
 
-    // Verificar si el turno existe en la base de datos
     if (!turno) {
-      return res.status(404).json({ message: "No se encontró el turno con el ID proporcionado." });
+      return res
+        .status(404)
+        .json({ message: "No se encontró el turno con el ID proporcionado." });
     }
 
     // Guardar el día del turno parseado antes de eliminarlo
-    const deletedDate = turno.date
+    const deletedDate = turno.date;
     console.log(deletedDate);
 
     // Eliminar el turno de la base de datos
     await UnavailableDays.findByIdAndDelete(id);
 
     return res.json({
-      message: `El turno del día ${format(deletedDate, "eeee d 'de' MMMM", { locale: es })} fue eliminado exitosamente.`,
+      message: `El turno del día ${format(deletedDate, "eeee d 'de' MMMM", {
+        locale: es,
+      })} fue eliminado exitosamente.`,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

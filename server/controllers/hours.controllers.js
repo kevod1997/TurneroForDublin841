@@ -1,7 +1,47 @@
 import { parseISO, format, isWithinInterval } from "date-fns";
 import es from "date-fns/locale/es/index.js";
-import CancelledHours from "../models/CancelledHours.js";
-import UnavailableDays from "../models/UnavailableDays.js";
+import CancelledHours from "../models/hours.model.js";
+import UnavailableDays from "../models/days.model.js";
+import { isDateInPast } from "../utils/date.js";
+
+export const getCancelledHours = async (req, res) => {
+  try {
+    const cancelledHours = await CancelledHours.find();
+    if (cancelledHours.length === 0) {
+      return res.status(404).json({ message: "No hay horas canceladas" });
+    }
+    return res.json(cancelledHours);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getCancelledHoursByWeek = async (req, res) => {
+  try {
+    const { week } = req.params;
+    const parsedWeek = parseISO(week);
+    const WeekStart = startOfWeek(parsedWeek);
+    const WeekEnd = endOfWeek(parsedWeek);
+    console.log(WeekStart, WeekEnd);
+
+    const cancelledHours = await CancelledHours.find({
+      day: { $gte: WeekStart, $lte: WeekEnd },
+    });
+    if (cancelledHours.length === 0) {
+      return res.status(404).json({
+        message: `No hay horas canceladas para la semana del ${format(
+          parsedWeek,
+          "d MMMM",
+          { locale: es }
+        )}`,
+      });
+    } else {
+      return res.json(cancelledHours);
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 export const cancelHours = async (req, res) => {
   try {
@@ -9,6 +49,12 @@ export const cancelHours = async (req, res) => {
 
     // Convertir la fecha en un objeto Date
     const parsedDate = parseISO(date);
+
+    if (isDateInPast(parsedDate)) {
+      return res.status(400).json({
+        message: "No es posible cancelar horas de una fecha que ya ha pasado.",
+      });
+    }
 
     //Verificar que el dia no sea domingo o lunes
     if (
@@ -72,14 +118,12 @@ export const cancelHours = async (req, res) => {
       });
     }
 
-    // Crear el objeto para el intervalo de horas cancelado
     const cancelledInterval = new CancelledHours({
       date: parsedDate,
       startHour,
       endHour,
     });
 
-    // Guardar el intervalo de horas cancelado en la base de datos
     await cancelledInterval.save();
 
     if (startHour === endHour) {
@@ -109,7 +153,6 @@ export const updateCancelledHours = async (req, res) => {
     const { id } = req.params;
     const { date, startHour, endHour } = req.body;
 
-    // Convertir la fecha en un objeto Date
     const parsedDate = parseISO(date);
 
     const existingCancelledHours = await CancelledHours.find({
@@ -171,8 +214,6 @@ export const updateCancelledHours = async (req, res) => {
 export const deleteCancelledHours = async (req, res) => {
   try {
     const { date, startHour, endHour } = req.body;
-
-    // Convertir la fecha en un objeto Date
     const parsedDate = parseISO(date);
 
     // Verificar si el intervalo de horas cancelado existe en la base de datos
@@ -215,20 +256,15 @@ export const deleteCancelledHours = async (req, res) => {
           { locale: es }
         )} estan nuevamente disponibles.
         Los siguientes turnos estan nuevamente disponibles: ${cancelledHours.map(
-          //format cancelledHours with paseISO
           (cancelledHour) =>
-            format(
-              parseISO(`2000-01-01T${cancelledHour.startHour}`),
-              "HH:mm",
-              { locale: es }
-            ) +
+            format(parseISO(`2000-01-01T${cancelledHour.startHour}`), "HH:mm", {
+              locale: es,
+            }) +
             " a " +
-            format(
-              parseISO(`2000-01-01T${cancelledHour.endHour}`),
-              "HH:mm",
-              { locale: es }
-            )
-            )}`,
+            format(parseISO(`2000-01-01T${cancelledHour.endHour}`), "HH:mm", {
+              locale: es,
+            })
+        )}`,
       });
     }
   } catch (error) {
@@ -247,7 +283,6 @@ export const deleteCancelledHoursById = async (req, res) => {
 
     const { date, startHour, endHour } = cancelledHour;
 
-    // Eliminar el documento de las horas canceladas en la base de datos
     await CancelledHours.findByIdAndDelete(id);
 
     return res.json({

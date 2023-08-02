@@ -1,14 +1,10 @@
 import { endOfWeek, format, parseISO, startOfWeek } from "date-fns";
-import Turno from "../models/Turno.js";
-import UnavailableDays from "../models/UnavailableDays.js";
-import {
-  availablesHours,
-  getAvailableTurns,
-  isHourAvailable,
-} from "../utils/hours.js";
+import Turno from "../models/turn.model.js";
+import UnavailableDays from "../models/days.model.js";
+import { availablesHours, isHourAvailable } from "../utils/hours.js";
+import { getAvailableTurns } from "../utils/turns.js";
 import es from "date-fns/locale/es/index.js";
-// import CancelledHours from "../models/CancelledHours.js";
-
+import { isTurnInPast } from "../utils/date.js";
 
 export const getTurn = async (req, res) => {
   try {
@@ -24,22 +20,21 @@ export const getTurn = async (req, res) => {
 
 export const getTurnsByDay = async (req, res) => {
   try {
-    const parsedDay = parseISO(req.params.day);
+    const parsedDate = parseISO(req.params.date);
 
-    const turns = await Turno.find({ day: parsedDay });
+    const turns = await Turno.find({ date: parsedDate });
 
-    if (turns) {
-      return res.json(turns);
-    } else {
+    if (turns.length === 0) {
       return res.status(404).json({
-        message: `No hay turnos para el dia ${parsedDay.toLocaleDateString(
+        message: `No hay turnos para el dia ${parsedDate.toLocaleDateString(
           "es-ES",
           {
             weekday: "long",
           }
-        )}`,
+        )} ${format(parsedDate, "d 'de' MMMM", { locale: es })}`,
       });
     }
+    return res.json(turns);
   } catch (error) {
     console.error("Error al obtener los turnos:", error);
     return res.status(500).json({ message: error.message });
@@ -56,22 +51,19 @@ export const getTurnsByWeek = async (req, res) => {
     console.log(WeekStart, WeekEnd);
 
     const turns = await Turno.find({
-      day: { $gte: WeekStart, $lte: WeekEnd },
+      date: { $gte: WeekStart, $lte: WeekEnd },
     });
 
     if (turns.length === 0) {
-
-      return res
-        .status(404)
-        .json({
-          message: `No hay turnos para la semana del ${format(
-            parsedWeek,
-            "d MMMM",
-            { locale: es }
-          )}`,
-        });
-    } else {    
-        return res.json(turns);
+      return res.status(404).json({
+        message: `No hay turnos para la semana del ${format(
+          parsedWeek,
+          "d MMMM",
+          { locale: es }
+        )}`,
+      });
+    } else {
+      return res.json(turns);
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -80,43 +72,43 @@ export const getTurnsByWeek = async (req, res) => {
 
 export const createTurn = async (req, res) => {
   try {
-    const { name, phone, day, hour, corte } = req.body;
+    const { name, phone, date, hour, corte } = req.body;
 
     // Utilizar parseISO de date-fns para analizar la fecha en formato (AAAA-MM-DD)
-    const parsedDay = parseISO(day);
+    const parsedDate = parseISO(date);
+
+    if (isTurnInPast(parsedDate, hour) === false) {
+      // El turno está en el pasado, no se permite sacar el turno
+      return res
+        .status(400)
+        .json({ message: "El turno ya ha pasado y no puede ser sacado." });
+    }
 
     // Verificar que dia de la semanas es, para saber si la peluqueria esta abierta y si hay turno disponible en la hora solicitada
-    const weekDay = parsedDay
+    const weekDay = parsedDate
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase();
     const availableHours = availablesHours[weekDay.toLowerCase()];
-    if (!availableHours) {
-      return res.status(400).json({
-        error: `No trabajamos el dia ${parsedDay.toLocaleDateString("es-ES", {
-          weekday: "long",
-        })}. Por favor, seleccione un día hábil.`,
-      });
-    }
-
     // Verificar que el día no este cancelado
     const dayEnabled = await UnavailableDays.findOne({
-      date: parsedDay,
+      date: parsedDate,
       enabled: true,
     });
-    if (dayEnabled) {
+
+    if (!availableHours || dayEnabled) {
       return res.status(400).json({
-        error: `No trabajamos el dia ${parsedDay.toLocaleDateString("es-ES", {
+        error: `No trabajamos el dia ${parsedDate.toLocaleDateString("es-ES", {
           weekday: "long",
         })}. Por favor, seleccione un día hábil.`,
       });
     }
 
     // Verificar las horas disponibles para el día seleccionado
-    const turns = await getAvailableTurns(parsedDay);
+    const turns = await getAvailableTurns(parsedDate);
     // Verificar si la hora solicitada está disponible
     if (!isHourAvailable(hour, turns.availableTurns)) {
       return res.status(400).json({
-        error: `En el día ${parsedDay.toLocaleDateString("es-ES", {
+        error: `En el día ${parsedDate.toLocaleDateString("es-ES", {
           weekday: "long",
         })} no hay turnos disponibles a las ${hour}. Por favor, seleccione otro horario.`,
       });
@@ -126,7 +118,7 @@ export const createTurn = async (req, res) => {
     const newTurn = new Turno({
       name,
       phone,
-      day: parsedDay,
+      date: parsedDate,
       hour,
       corte,
     });
