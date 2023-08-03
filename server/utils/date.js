@@ -1,4 +1,4 @@
-import { isPast, setMinutes, setHours, subHours, sub } from "date-fns";
+import { setMinutes, setHours, subHours, endOfDay} from "date-fns";
 
 export function isTurnInPast(parsedDate, hour) {
   // Parsear la fecha del turno y la hora del turno a objetos Date
@@ -16,6 +16,10 @@ export function isTurnInPast(parsedDate, hour) {
 
 // Función de utilidad para verificar si una fecha ya ha pasado
 export function isDateInPast(date) {
-  const currentDate = new Date();
+  date = endOfDay(date);
+  const currentDate = subHours(new Date(), 3);
+  console.log(currentDate);
   return date < currentDate;
 }
+
+
