@@ -4,10 +4,12 @@ import authRoutes from './routes/auth.routes.js'
 import cron from 'node-cron'
 import { deleteExpiredItems } from './utils/deleteItems.js'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 
 const app = express()
 
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
 app.use(express.json())
 app.use(cookieParser())
 

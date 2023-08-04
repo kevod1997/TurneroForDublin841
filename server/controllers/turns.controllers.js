@@ -55,7 +55,7 @@ export const turnsForPickDay = async (req, res) => {
     const turns = await getAvailableTurns(parsedDate);
     const updatedTurns = updateTurnAvailability(parsedDate, turns);
 
-    return res.json(updatedTurns);
+    return res.json(updatedTurns.availableTurns);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
