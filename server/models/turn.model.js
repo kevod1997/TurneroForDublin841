@@ -5,7 +5,7 @@ import mongoose from "mongoose";
   phone: { type: String, required: true },
   date: { type: Date, required: true },
   hour: { type: String, required: true },
-  corte: {type: String, enum: ['pelo', 'barba', 'ambos'], required: true}
+  corte: {type: String, enum: ['Corte', 'Barba', 'Corte y Barba'], required: true}
 }, {
   timestamps: true,
 });

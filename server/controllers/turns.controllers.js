@@ -44,7 +44,7 @@ export const turnsForPickDay = async (req, res) => {
       enabled: false,
     });
     if (!availableHours || dayEnabled) {
-      return res.status(400).json({
+      return res.json({
         error: `No trabajamos el dia ${parsedDate.toLocaleDateString("es-ES", {
           weekday: "long",
         })}. Por favor, seleccione un día hábil.`,
