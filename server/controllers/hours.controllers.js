@@ -1,4 +1,10 @@
-import { parseISO, format, isWithinInterval } from "date-fns";
+import {
+  parseISO,
+  format,
+  isWithinInterval,
+  startOfWeek,
+  endOfWeek,
+} from "date-fns";
 import es from "date-fns/locale/es/index.js";
 import CancelledHours from "../models/hours.model.js";
 import UnavailableDays from "../models/days.model.js";
@@ -22,11 +28,11 @@ export const getCancelledHoursByWeek = async (req, res) => {
     const parsedWeek = parseISO(week);
     const WeekStart = startOfWeek(parsedWeek);
     const WeekEnd = endOfWeek(parsedWeek);
-    console.log(WeekStart, WeekEnd);
 
     const cancelledHours = await CancelledHours.find({
-      day: { $gte: WeekStart, $lte: WeekEnd },
+      date: { $gte: WeekStart, $lte: WeekEnd },
     });
+
     if (cancelledHours.length === 0) {
       return res.status(404).json({
         message: `No hay horas canceladas para la semana del ${format(

@@ -4,7 +4,7 @@ import UnavailableDays from "../models/days.model.js";
 import { availablesHours, isHourAvailable } from "../utils/hours.js";
 import { getAvailableTurns, updateTurnAvailability } from "../utils/turns.js";
 import es from "date-fns/locale/es/index.js";
-import {  isDateInPast, isTurnInPast,  } from "../utils/date.js";
+import { isDateInPast, isTurnInPast } from "../utils/date.js";
 
 export const getTurn = async (req, res) => {
   try {
@@ -91,7 +91,6 @@ export const getTurnsByWeek = async (req, res) => {
     const parsedWeek = parseISO(week);
     const WeekStart = startOfWeek(parsedWeek);
     const WeekEnd = endOfWeek(parsedWeek);
-    console.log(WeekStart, WeekEnd);
 
     const turns = await Turno.find({
       date: { $gte: WeekStart, $lte: WeekEnd },
@@ -115,7 +114,8 @@ export const getTurnsByWeek = async (req, res) => {
 
 export const createTurn = async (req, res) => {
   try {
-    const { name, phone, date, hour, corte } = req.body;
+    const { name, phone, date, hour, service } = req.body;
+    console.log(req.body);
 
     // Utilizar parseISO de date-fns para analizar la fecha en formato (AAAA-MM-DD)
     const parsedDate = parseISO(date);
@@ -163,7 +163,7 @@ export const createTurn = async (req, res) => {
       phone,
       date: parsedDate,
       hour,
-      corte,
+      service,
     });
 
     await newTurn.save();
