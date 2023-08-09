@@ -10,11 +10,11 @@ const router = Router()
 
 // Turnos
 router.get("/turnos/:date", turnsForPickDay)
-router.get("/turnos/admin/:date",authRequired, getTurnsByDay)
+router.get("/admin/turnos/:date",authRequired, getTurnsByDay)
 router.get("/turnos/:id", authRequired, getTurn)
 router.get("/turnos/semana/:week", authRequired, getTurnsByWeek)
 router.post("/turnos/newTurn", validateSchema(createTurnSchema), createTurn) //user & admin
-router.delete("/turnos/delete/:id", authRequired, deleteTurn)
+router.delete("/admin/turnos/:id", authRequired, deleteTurn)
 
 // Cancel Working days
 router.get("/cancelWorkingDays", authRequired, getCancelledWorkingDays)

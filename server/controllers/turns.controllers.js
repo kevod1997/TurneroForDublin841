@@ -63,12 +63,14 @@ export const turnsForPickDay = async (req, res) => {
 
 export const getTurnsByDay = async (req, res) => {
   try {
+    
     const parsedDate = parseISO(req.params.date);
+    console.log(parsedDate);
 
     const turns = await Turno.find({ date: parsedDate });
 
     if (turns.length === 0) {
-      return res.status(404).json({
+      return res.json({
         message: `No hay turnos para el dia ${parsedDate.toLocaleDateString(
           "es-ES",
           {
@@ -139,7 +141,7 @@ export const createTurn = async (req, res) => {
     });
 
     if (!availableHours || dayEnabled) {
-      return res.status(400).json({
+      return res.json({
         error: `No trabajamos el dia ${parsedDate.toLocaleDateString("es-ES", {
           weekday: "long",
         })}. Por favor, seleccione un día hábil.`,
