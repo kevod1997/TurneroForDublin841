@@ -1,3 +1,4 @@
+//feature para enviar mensajes cuando se crea un turno
 import twilio from "twilio";
 
 export const sendWhatsAppMessage = async (phone, message) => {
@@ -15,4 +16,5 @@ export const sendWhatsAppMessage = async (phone, message) => {
       console.error('Error al enviar el mensaje de WhatsApp:', error.message);
     }
   };
+
   

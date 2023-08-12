@@ -18,5 +18,4 @@ app.use(authRoutes)
 
 cron.schedule("0 0 * * 0", deleteExpiredItems);
 
-
 export default app
