@@ -12,7 +12,7 @@ export const useTurns = () => {
 
 export const TurnProvider = ({ children }) => {
   const [turns, setTurns] = useState([]);
-  const [turnError, setTurnError] = useState(); 
+  const [turnError, setTurnError] = useState();
   const [startDate, setStartDate] = useState();
   const [selectedPeriod, setSelectedPeriod] = useState("");
 
@@ -23,15 +23,13 @@ export const TurnProvider = ({ children }) => {
         if (Array.isArray(turnsData)) {
           setTurnError(null); // Resetea el mensaje de error si la solicitud es exitosa
           setTurns(turnsData);
-          
-        } else{
+        } else {
           setTurns([]); // Resetea los turnos a un array vacío en caso de un error
           setTurnError(turnsData.error); // Establece el mensaje de error
         }
       })();
     }
   }, [startDate]);
-
 
   const createTurn = async (turn) => {
     try {
@@ -42,23 +40,30 @@ export const TurnProvider = ({ children }) => {
     }
   };
 
-
   const getTurns = async (date) => {
-      try {
-        console.log(date);
-        const formattedDate = format(date, "yyyy-MM-dd"); // Formatea la fecha como lo necesites para la solicitud
-        console.log(formattedDate);
-        const res = await getTurnsByDate(formattedDate);
-        return res.data;
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      console.log(date);
+      const formattedDate = format(date, "yyyy-MM-dd"); // Formatea la fecha como lo necesites para la solicitud
+      console.log(formattedDate);
+      const res = await getTurnsByDate(formattedDate);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   };
-  
+
   console.log(turns);
   return (
     <turnContext.Provider
-      value={{ turns, startDate, setStartDate, turnError, createTurn, selectedPeriod, setSelectedPeriod }}
+      value={{
+        turns,
+        startDate,
+        setStartDate,
+        turnError,
+        createTurn,
+        selectedPeriod,
+        setSelectedPeriod,
+      }}
     >
       {children}
     </turnContext.Provider>

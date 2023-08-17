@@ -7,7 +7,7 @@ const router = Router();
 // Cancel Working days
 router.get("/admin/cancelWorkingDays", authRequired, getCancelledWorkingDays)
 router.post("/admin/cancelWorkingDays", authRequired, cancelWorkingDays)
-router.delete("/cancelWorkingDay/:id", authRequired, deleteCancelledDayById)
+router.delete("/admin/cancelWorkingDay/:id", authRequired, deleteCancelledDayById)
 router.delete("/admin/cancelWorkingDays", authRequired, deleteCancelledDays)
 
 export default router;

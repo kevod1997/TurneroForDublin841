@@ -10,7 +10,7 @@ export const deleteTurn = async (id) => axios.delete(`/admin/turnos/${id}`);
 //dias
 export const getCancelledDays = async () =>
   axios.get("/admin/cancelWorkingDays");
-export const addCancelledDay = async () =>
-  axios.post("/admin/cancelWorkingDays");
+export const addCancelledDay = async (dates) =>
+  axios.post("/admin/cancelWorkingDays", dates);
 export const deleteCancelledDay = async (id) =>
-  axios.delete(`/admin/cancelWorkingDays/${id}`);
+  axios.delete(`/admin/cancelWorkingDay/${id}`);

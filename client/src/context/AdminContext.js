@@ -1,6 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { deleteTurn, getTurnsByDateAdmin } from "../api/admin";
-import { format } from "date-fns";
+import {
+  addCancelledDay,
+  deleteCancelledDay,
+  deleteTurn,
+  getCancelledDays,
+  getTurnsByDateAdmin,
+} from "../api/admin";
+import {format, set } from "date-fns";
 
 export const adminContext = createContext();
 
@@ -11,6 +17,7 @@ export const useAdmin = () => {
 };
 
 export const AdminProvider = ({ children }) => {
+  //turns
   const [turns, setTurns] = useState([]);
   const [turnError, setTurnError] = useState();
   const [pickDay, setPickDay] = useState();
@@ -32,7 +39,6 @@ export const AdminProvider = ({ children }) => {
     }
   }, [pickDay]);
 
-
   const getTurnsAdmin = async (date) => {
     try {
       const formattedDate = format(date, "yyyy-MM-dd"); // Formatea la fecha como lo necesites para la solicitud
@@ -46,15 +52,97 @@ export const AdminProvider = ({ children }) => {
   const deleteTurnByAdmin = async (id) => {
     try {
       const res = await deleteTurn(id);
-      if(res.status === 204) setTurns(turns.filter(turn => turn._id !== id))
+      if (res.status === 204) setTurns(turns.filter((turn) => turn._id !== id));
     } catch (error) {
       console.log(error);
     }
   };
 
+  //days
+
+  const [cancelledDays, setCancelledDays] = useState([]);
+  const [dayError, setDayError] = useState();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const daysData = await getDaysAdmin();
+      if (Array.isArray(daysData)) {
+        setDayError(null);
+        setCancelledDays(daysData);
+      } else {
+        setCancelledDays([]);
+        setDayError(daysData.error);
+      }
+    })();
+  }, []);
+
+
+  const getDaysAdmin = async () => {
+    try {
+      const res = await getCancelledDays();
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addDayAdmin = async (dates) => {
+    try {
+      const res = await addCancelledDay(dates);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      setDayError(error);
+    }
+  };
+
+  const deleteDayAdmin = async (id) => {
+    try {
+      await deleteCancelledDay(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getUpdatedCancelledDays = async () => {
+    try {
+      const daysData = await getDaysAdmin();
+
+        setCancelledDays(daysData);
+        console.log(`se actualizo el estado de los dias cancelados, ${daysData}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   return (
     <adminContext.Provider
-      value={{ getTurnsAdmin, turns, setTurns, pickDay, setPickDay, deleteTurnByAdmin, turnError, notifications, setNotifications }}
+      value={{
+        getTurnsAdmin,
+        turns,
+        setTurns,
+        pickDay,
+        setPickDay,
+        deleteTurnByAdmin,
+        turnError,
+        notifications,
+        setNotifications,
+        cancelledDays,
+        setCancelledDays,
+        dayError,
+        setStartDate,
+        setEndDate,
+        startDate,
+        endDate,
+        addDayAdmin,
+        deleteDayAdmin,
+        getDaysAdmin,
+        getUpdatedCancelledDays,
+      }}
     >
       {children}
     </adminContext.Provider>

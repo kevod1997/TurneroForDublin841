@@ -9,7 +9,7 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signIn, authError: signInErrors, isAuthenticated, admin } = useAuth();
+  const { signIn, authError: signInErrors, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit = handleSubmit((data) => {
@@ -19,8 +19,7 @@ const LoginPage = () => {
   useEffect(() => {
     if (isAuthenticated) navigate("/admin");
   }, [isAuthenticated]);
-  console.log(isAuthenticated);
-  console.log(admin);
+  
   return (
     <div>
       <div className="flex justify-center">

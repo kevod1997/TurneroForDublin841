@@ -18,6 +18,7 @@ export const getCancelledWorkingDays = async (req, res) => {
 export const cancelWorkingDays = async (req, res) => {
   try {
     const { startDate, endDate } = req.body;
+    console.log(startDate, endDate);
 
     // Convertir las fechas de inicio y fin en objetos Date
     const parsedStartDate = parseISO(startDate);
@@ -42,11 +43,13 @@ export const cancelWorkingDays = async (req, res) => {
         continue;
       }
       const formattedDay = toDate(currentDay, "dd-MM-yyyy");
+      console.log('formated '+ formattedDay);
 
       // Buscar si el dia ya esta cancelado
       const dayExist = await UnavailableDays.findOne({ date: formattedDay });
       if (dayExist) {
-        return res.status(404).json({ message: "Este dia ya esta cancelado" });
+        console.log('dayexist'+ dayExist);
+        return res.json({ message: `El dia ` });
       } else {
         // Si el día no existe, crearlo y deshabilitarlo (enabled = false)
         const newDay = new UnavailableDays({

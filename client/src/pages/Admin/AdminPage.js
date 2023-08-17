@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import DayTurnsComponent from "../../components/Admin/DayTurnsComponent";
+import DayTurnsComponent from "../../components/Admin/Turns/DayTurnsComponent";
 import { useAuth } from "../../context/AuthContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Notification from "../../components/Admin/Notification";
-import CancelledDays from "../../components/Admin/CancelledDays";
-import CancelledHours from "../../components/Admin/CancelledHours";
+import CancelledDays from "../../components/Admin/Days/CancelledDays";
+import CancelledHours from "../../components/Admin/Hours/CancelledHours";
 
 const AdminPage = () => {
   const MySwal = withReactContent(Swal);
@@ -15,7 +15,6 @@ const AdminPage = () => {
     { label: "Ver turnos por dia", component: <DayTurnsComponent /> },
     { label: "Cancelar Dias", component: <CancelledDays /> },
     { label: "Cancelar Horas", component: <CancelledHours /> },
-    // Otras opciones con label y component
   ];
 
   const [selectedComponent, setSelectedComponent] = useState(null);
@@ -26,7 +25,7 @@ const AdminPage = () => {
 
   const handleLogout = () => {
     // Implementa la lógica de logout aquí
-    Swal.fire({
+    MySwal.fire({
       title: 'Seguro que queres salir?',
       icon: 'warning',
       showCancelButton: true,
@@ -36,7 +35,7 @@ const AdminPage = () => {
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire(
+        MySwal.fire(
           'Cerraste Sesion!',
         )
         logout()
@@ -46,7 +45,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="flex-col h-full bg-slate-100">
+    <div className="flex-col  bg-slate-100">
       <div className="p-4 flex justify-center">
         <p className="text-2xl font-bold text-center">Dashboard Dublin841</p>
         <Notification />
@@ -85,7 +84,7 @@ const AdminPage = () => {
       {!selectedComponent && (
         <p className="text-center mt-6 text-red-500">Selecciona una opción</p>
       )}
-      <div className="mt-4 flex justify-center items-center max-w-screen-md mx-auto mb-4">
+      <div className="mt-4 flex justify-center items-center   mb-4">
         {selectedComponent}
       </div>
     </div>
