@@ -6,7 +6,7 @@ import {
   getCancelledDays,
   getTurnsByDateAdmin,
 } from "../api/admin";
-import {format, set } from "date-fns";
+import { format } from "date-fns";
 
 export const adminContext = createContext();
 
@@ -27,7 +27,6 @@ export const AdminProvider = ({ children }) => {
     if (pickDay) {
       (async () => {
         const turnsData = await getTurnsAdmin(pickDay);
-        console.log(turnsData);
         if (Array.isArray(turnsData)) {
           setTurnError(null);
           setTurns(turnsData);
@@ -58,7 +57,7 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-  //days
+  //days, refactorizar
 
   const [cancelledDays, setCancelledDays] = useState([]);
   const [dayError, setDayError] = useState();
@@ -73,11 +72,10 @@ export const AdminProvider = ({ children }) => {
         setCancelledDays(daysData);
       } else {
         setCancelledDays([]);
-        setDayError(daysData.error);
+        setDayError(daysData);
       }
     })();
   }, []);
-
 
   const getDaysAdmin = async () => {
     try {
@@ -94,7 +92,6 @@ export const AdminProvider = ({ children }) => {
       return res.data;
     } catch (error) {
       console.log(error);
-      setDayError(error);
     }
   };
 
@@ -106,18 +103,14 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-
   const getUpdatedCancelledDays = async () => {
     try {
       const daysData = await getDaysAdmin();
-
-        setCancelledDays(daysData);
-        console.log(`se actualizo el estado de los dias cancelados, ${daysData}`);
+      setCancelledDays(daysData);
     } catch (error) {
       console.log(error);
     }
   };
-
 
   return (
     <adminContext.Provider

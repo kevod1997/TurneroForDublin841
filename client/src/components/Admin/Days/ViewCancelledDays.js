@@ -5,21 +5,20 @@ import { isAfter } from "date-fns";
 import { subDays } from "date-fns";
 
 const ViewCancelledDays = () => {
-  const { cancelledDays, deleteDayAdmin, setCancelledDays, getUpdatedCancelledDays } = useAdmin();
+  const {
+    cancelledDays,
+    deleteDayAdmin,
+    setCancelledDays,
+  } = useAdmin();
   const [selectedDays, setSelectedDays] = useState([]);
-
-  useEffect(() => {
-    getUpdatedCancelledDays();
-    console.log('render');
-  }, []); 
 
   useEffect(() => {
     filterAndSortCancelledDays(cancelledDays);
   }, [cancelledDays]);
 
   const filterAndSortCancelledDays = (days) => {
-    const yesterday = subDays(new Date(), 1); 
-  
+    const yesterday = subDays(new Date(), 1);
+
     const filteredCancelledDays = days.filter((day) => {
       const cancelDate = parseISO(day.date);
       return isAfter(cancelDate, yesterday);
@@ -37,6 +36,7 @@ const ViewCancelledDays = () => {
       for (const selectedDay of selectedDays) {
         await deleteDayAdmin(selectedDay._id);
       }
+      alert(`Volviste a habilitar los dias: ${selectedDays.map((day) => format(parseISO(day.date), "dd/MM/yyyy"))}`)
       // Actualizar el estado de los días cancelados después de eliminarlos
       setCancelledDays((prevCancelledDays) =>
         prevCancelledDays.filter(

@@ -9,6 +9,7 @@ import es from "date-fns/locale/es/index.js";
 import CancelledHours from "../models/hours.model.js";
 import UnavailableDays from "../models/days.model.js";
 import { isDateInPast } from "../utils/date.js";
+import { availablesHours } from "../utils/hours.js";
 
 export const getCancelledHours = async (req, res) => {
   try {
@@ -17,6 +18,39 @@ export const getCancelledHours = async (req, res) => {
       return res.status(404).json({ message: "No hay horas canceladas" });
     }
     return res.json(cancelledHours);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAvailableHours = async (req, res) => {
+  try {
+    const { date } = req.params; 
+    const adjustedDate = new Date(date); 
+    adjustedDate.setHours(adjustedDate.getHours() + 3)
+
+    const cancelledHours = await CancelledHours.find({ date: new Date(adjustedDate) });
+    console.log(cancelledHours);
+
+    const dayOfWeek = new Date(adjustedDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+    console.log(dayOfWeek);
+    const allAvailableHours = availablesHours[dayOfWeek] || [];
+
+    // Filtra las horas disponibles para excluir las horas canceladas
+    const filteredAvailableHours = allAvailableHours.filter((hour) => {
+      const isCancelled = cancelledHours.some((cancelledHour) => {
+        const cancelledStart = cancelledHour.startHour;
+        const cancelledEnd = cancelledHour.endHour;
+        const currentHour = hour; // La hora actual en formato "HH:mm"
+    
+        return (
+          currentHour >= cancelledStart && currentHour <= cancelledEnd
+        );
+      });
+      return !isCancelled;
+    });
+    
+    return res.json(filteredAvailableHours);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

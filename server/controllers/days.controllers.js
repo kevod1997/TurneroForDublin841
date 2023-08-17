@@ -18,7 +18,6 @@ export const getCancelledWorkingDays = async (req, res) => {
 export const cancelWorkingDays = async (req, res) => {
   try {
     const { startDate, endDate } = req.body;
-    console.log(startDate, endDate);
 
     // Convertir las fechas de inicio y fin en objetos Date
     const parsedStartDate = parseISO(startDate);
@@ -28,6 +27,35 @@ export const cancelWorkingDays = async (req, res) => {
       return res.status(400).json({
         message: "No es posible cancelar un dia de una fecha que ya ha pasado.",
       });
+    }
+
+    // Verificar si los días ya están cancelados en la base de datos
+    const cancelledDaysInDB = [];
+
+    for (
+      let currentDay = parsedStartDate;
+      currentDay <= parsedEndDate;
+      currentDay = addDays(currentDay, 1)
+    ) {
+      const formattedDay = toDate(currentDay, "dd-MM-yyyy");
+      const dayExist = await UnavailableDays.findOne({ date: formattedDay });
+      console.log(`dayExist: ${dayExist}, formattedDay: ${formattedDay})`);
+      if (dayExist) {
+        cancelledDaysInDB.push(currentDay);
+      }
+    }
+
+    if (cancelledDaysInDB.length === 1) {
+      const message = `El día ${cancelledDaysInDB
+        .map((date) => format(date, "eeee d 'de' MMMM", { locale: es }))
+        .join(", ")} ya está cancelado.`;
+      return res.json({ message });
+    }
+    if (cancelledDaysInDB.length > 1) {
+      const message = `Los días ${cancelledDaysInDB
+        .map((date) => format(date, "eeee d 'de' MMMM", { locale: es }))
+        .join(", ")} ya están cancelados.`;
+      return res.json({ message });
     }
 
     // Iterar sobre los días del intervalo y realizar la cancelación para cada día
@@ -43,12 +71,13 @@ export const cancelWorkingDays = async (req, res) => {
         continue;
       }
       const formattedDay = toDate(currentDay, "dd-MM-yyyy");
-      console.log('formated '+ formattedDay);
+      console.log("formated " + formattedDay);
+      console.log("current " + currentDay);
 
       // Buscar si el dia ya esta cancelado
       const dayExist = await UnavailableDays.findOne({ date: formattedDay });
       if (dayExist) {
-        console.log('dayexist'+ dayExist);
+        console.log("dayexist" + dayExist);
         return res.json({ message: `El dia ` });
       } else {
         // Si el día no existe, crearlo y deshabilitarlo (enabled = false)
