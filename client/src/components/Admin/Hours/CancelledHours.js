@@ -1,9 +1,12 @@
-import { setHours, setMinutes } from "date-fns";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
+import { useAdmin } from "../../../context/AdminContext";
+import Calendar from "./Calendar";
 
 const CancelledHours = () => {
   const [showCancelledDays, setShowCancelledDays] = useState(false);
+  const {hours, setHours, hourError, startTime, setStartTime, endTime, setEndTime,  pickDayForHours,
+    setPickDayForHours} = useAdmin();
+  
 
   return (
     <div className="flex flex-col items-center mt-8 mb-4">
@@ -26,39 +29,12 @@ const CancelledHours = () => {
         </button>
       </div>
       <div className="mt-4">
-        {showCancelledDays ? <AddCancelledDays /> : <ViewCancelledDays />}
+        {showCancelledDays ? <Calendar startTime={startTime} setStartTime={setStartTime} pickDayForHours={pickDayForHours} setPickDayForHours={setPickDayForHours} endTime={endTime} setEndTime={setEndTime} hours={hours} setHours={setHours} /> : <ViewCancelledDays />}
       </div>
     </div>
   );
 };
 
-const AddCancelledDays = () => {
-  const [startDate, setStartDate] = useState();
-  return (
-    <>
-    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-    <DatePicker
-      selected={startDate}
-      onChange={(date) => setStartDate(date)}
-      showTimeSelect
-      showTimeSelectOnly
-      timeIntervals={15}
-      timeCaption="Time"
-      dateFormat="h:mm aa"
-    />
-    <DatePicker
-      selected={startDate}
-      onChange={(date) => setStartDate(date)}
-      showTimeSelectOnly
-      showTimeSelect
-      timeCaption="Time"
-      dateFormat="HH:mm"
-      // injectTimes={}
-
-    />
-    </>
-  );
-};
 
 const ViewCancelledDays = () => {
   return (

@@ -3,6 +3,7 @@ import {
   addCancelledDay,
   deleteCancelledDay,
   deleteTurn,
+  getAvailableHours,
   getCancelledDays,
   getTurnsByDateAdmin,
 } from "../api/admin";
@@ -64,6 +65,8 @@ export const AdminProvider = ({ children }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  //como puedo hacer para que esto se monte en el componente correspondiente sin tener que pasarle por las dependencias que estan en el contexto.
+
   useEffect(() => {
     (async () => {
       const daysData = await getDaysAdmin();
@@ -112,6 +115,40 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
+  //hours
+  const [pickDayForHours, setPickDayForHours] = useState();
+  const [hours, setHours] = useState([]);
+  const [hourError, setHourError] = useState();
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+
+  useEffect(() => {
+    if (pickDayForHours) {
+      (async () => {
+        const hoursData = await getHours(pickDayForHours);
+        if (Array.isArray(hoursData)) {
+          setHourError(null);
+          setHours(hoursData);
+        } else {
+          setHours([]);
+          setHourError(hoursData);
+        }
+      })();
+    }
+  }, [pickDayForHours]);
+
+  const getHours = async (date) => {
+    try {
+      console.log(date);
+       // Formatea la fecha como lo necesites para la solicitud
+      const res = await getAvailableHours(date);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <adminContext.Provider
       value={{
@@ -135,6 +172,15 @@ export const AdminProvider = ({ children }) => {
         deleteDayAdmin,
         getDaysAdmin,
         getUpdatedCancelledDays,
+        pickDayForHours,
+        setPickDayForHours,
+        hours,
+        setHours,
+        hourError,
+        startTime,
+        setStartTime,
+        endTime,
+        setEndTime,
       }}
     >
       {children}

@@ -26,6 +26,7 @@ export const getCancelledHours = async (req, res) => {
 export const getAvailableHours = async (req, res) => {
   try {
     const { date } = req.params; 
+    console.log(date);
     const adjustedDate = new Date(date); 
     adjustedDate.setHours(adjustedDate.getHours() + 3)
 
