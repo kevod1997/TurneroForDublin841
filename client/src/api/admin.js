@@ -17,3 +17,4 @@ export const deleteCancelledDay = async (id) =>
 
   //hours
 export const getAvailableHours = async (date) => axios.get(`/admin/availableHours/${date}`);
+export const cancelAvailableHour = async (hours) => axios.post('/admin/cancelHours', hours);

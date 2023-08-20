@@ -1,13 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   addCancelledDay,
+  cancelAvailableHour,
   deleteCancelledDay,
   deleteTurn,
   getAvailableHours,
   getCancelledDays,
   getTurnsByDateAdmin,
 } from "../api/admin";
-import { format } from "date-fns";
+import { format, getDay, isSameDay } from "date-fns";
 
 export const adminContext = createContext();
 
@@ -149,6 +150,35 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
+  const addAdminHours = async (hours) => {
+    try {
+      console.log(hours);
+      const res = await cancelAvailableHour(hours);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //utils
+
+  const isAvailableDay = (dates) => {
+    const day = getDay(dates);
+    const currentDate = new Date(dates);
+
+    // Comprueba si el día es domingo (0) o lunes (1)
+    if (day === 0 || day === 1) {
+      return false; // No permitir días domingo o lunes
+    }
+
+    // Comprueba si la fecha está en la lista de días cancelados
+    const isCancelled = cancelledDays.some((cancelledDate) =>
+      isSameDay(new Date(cancelledDate.date), currentDate)
+    );
+
+    return !isCancelled;
+  };
+
   return (
     <adminContext.Provider
       value={{
@@ -181,6 +211,8 @@ export const AdminProvider = ({ children }) => {
         setStartTime,
         endTime,
         setEndTime,
+        isAvailableDay,
+        addAdminHours
       }}
     >
       {children}

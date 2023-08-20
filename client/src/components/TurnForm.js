@@ -31,7 +31,7 @@ const Turnos = ({ selectedTime, handleSelectedTime, selectedDay }) => {
       : ""
   }`;
   const isTimeAvailable = filteredTimes.includes(selectedTime);
-
+  console.log(turns);
   return (
     <>
       <div className="mt-8 mb-4">
@@ -69,7 +69,7 @@ const Turnos = ({ selectedTime, handleSelectedTime, selectedDay }) => {
           </div>
         )}
         <div className="container mx-auto">
-          {selectedPeriod === "" ? (
+          {selectedPeriod === "" && turns.length > 0 ? (
             <p className="text-center text-red-500 font-bold">
               Por favor selecciona un horario.
             </p>

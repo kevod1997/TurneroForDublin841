@@ -1,4 +1,4 @@
-import { format, getDay, isSameDay } from "date-fns";
+import { format} from "date-fns";
 import DatePicker from "react-datepicker";
 import { useAdmin } from "../../../context/AdminContext";
 import { useForm } from "react-hook-form";
@@ -19,25 +19,11 @@ const AddCancelledDays = () => {
     addDayAdmin,
     cancelledDays,
     getUpdatedCancelledDays,
+    isAvailableDay
   } = useAdmin();
 
 
-  const isAvailableDay = (dates) => {
-    const day = getDay(dates);
-    const currentDate = new Date(dates);
-
-    // Comprueba si el día es domingo (0) o lunes (1)
-    if (day === 0 || day === 1) {
-      return false; // No permitir días domingo o lunes
-    }
-
-    // Comprueba si la fecha está en la lista de días cancelados
-    const isCancelled = cancelledDays.some((cancelledDate) =>
-      isSameDay(new Date(cancelledDate.date), currentDate)
-    );
-
-    return !isCancelled;
-  };
+  
   
   const onSubmit = handleSubmit(async (dates) => {
     const { startDate, endDate } = dates;

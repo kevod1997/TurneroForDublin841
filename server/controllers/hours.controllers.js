@@ -86,6 +86,7 @@ export const getCancelledHoursByWeek = async (req, res) => {
 
 export const cancelHours = async (req, res) => {
   try {
+    console.log(req.body);
     const { date, startHour, endHour } = req.body;
 
     // Convertir la fecha en un objeto Date
