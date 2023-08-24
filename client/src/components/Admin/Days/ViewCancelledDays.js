@@ -14,6 +14,7 @@ const ViewCancelledDays = () => {
 
   useEffect(() => {
     filterAndSortCancelledDays(cancelledDays);
+    console.log('render');
   }, [cancelledDays]);
 
   const filterAndSortCancelledDays = (days) => {

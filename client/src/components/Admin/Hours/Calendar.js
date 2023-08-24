@@ -15,6 +15,7 @@ const Calendar = ({
   setPickDayForHours,
   endTime,
   setEndTime,
+  getUpdatedCancelleHours,
   hours,
   setHours,
 }) => {
@@ -30,23 +31,22 @@ const Calendar = ({
   } = useForm();
 
   const onSubmit = handleSubmit(async (data) => {
+    
+    const hours = {
+      startHour: data.startTime,
+      endHour: data.endTime,
+      date: data.date
+    };
     try {
-      console.log(data);
 
-      const hours = {
-        startHour: data.startTime,
-        endHour: data.endTime,
-        date: data.date
-      };
-
-      await addAdminHours(hours); // Asumo que addAdminHours es una función asíncrona
-
+      await addAdminHours(hours); 
       setStartTime("");
       setEndTime("");
       setPickDayForHours("");
       setSelectedTime(null);
       reset();
-
+      
+      
       alert("Horas canceladas exitosamente"); // Alerta en caso de éxito
     } catch (error) {
       console.error("Error:", error);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAdmin } from "../../../context/AdminContext";
 import Calendar from "./Calendar";
+import ViewHours from "./ViewHours";
 
 const CancelledHours = () => {
   const [showCancelledDays, setShowCancelledDays] = useState(false);
@@ -29,20 +30,11 @@ const CancelledHours = () => {
         </button>
       </div>
       <div className="mt-4">
-        {showCancelledDays ? <Calendar startTime={startTime} setStartTime={setStartTime} pickDayForHours={pickDayForHours} setPickDayForHours={setPickDayForHours} endTime={endTime} setEndTime={setEndTime} hours={hours} setHours={setHours} /> : <ViewCancelledDays />}
+        {showCancelledDays ? <Calendar startTime={startTime} setStartTime={setStartTime} pickDayForHours={pickDayForHours} setPickDayForHours={setPickDayForHours} endTime={endTime} setEndTime={setEndTime} hours={hours} setHours={setHours} /> : <ViewHours />}
       </div>
     </div>
   );
 };
 
-
-const ViewCancelledDays = () => {
-  return (
-    <div className="border border-gray-300 p-4 rounded bg-gray-100">
-      {/* Aquí iría la visualización de los días cancelados */}
-      <p>Calendario o lista de días cancelados</p>
-    </div>
-  );
-};
 
 export default CancelledHours;

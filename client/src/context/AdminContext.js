@@ -3,12 +3,14 @@ import {
   addCancelledDay,
   cancelAvailableHour,
   deleteCancelledDay,
+  deleteCancelledHour,
   deleteTurn,
   getAvailableHours,
   getCancelledDays,
+  getCancelledHours,
   getTurnsByDateAdmin,
 } from "../api/admin";
-import { format, getDay, isSameDay } from "date-fns";
+import { format, getDay, isSameDay, set } from "date-fns";
 
 export const adminContext = createContext();
 
@@ -122,10 +124,12 @@ export const AdminProvider = ({ children }) => {
   const [hourError, setHourError] = useState();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [cancelledHours, setCancelledHours] = useState([]);
 
   useEffect(() => {
     if (pickDayForHours) {
       (async () => {
+        console.log("render");
         const hoursData = await getHours(pickDayForHours);
         if (Array.isArray(hoursData)) {
           setHourError(null);
@@ -141,9 +145,7 @@ export const AdminProvider = ({ children }) => {
   const getHours = async (date) => {
     try {
       console.log(date);
-       // Formatea la fecha como lo necesites para la solicitud
       const res = await getAvailableHours(date);
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -152,7 +154,6 @@ export const AdminProvider = ({ children }) => {
 
   const addAdminHours = async (hours) => {
     try {
-      console.log(hours);
       const res = await cancelAvailableHour(hours);
       return res.data;
     } catch (error) {
@@ -160,8 +161,35 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-  //utils
+  const getCancelledHoursAdmin = async () => {
+    try {
+      const res = await getCancelledHours();
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  const deleteCancelledHourAdmin = async (id) => {
+    try {
+      await deleteCancelledHour(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getUpdatedCancelledHours = async () => {
+    try {
+      const hoursData = await getCancelledHoursAdmin();
+      console.log(hoursData);
+      setCancelledHours(hoursData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  //utils
   const isAvailableDay = (dates) => {
     const day = getDay(dates);
     const currentDate = new Date(dates);
@@ -212,7 +240,11 @@ export const AdminProvider = ({ children }) => {
         endTime,
         setEndTime,
         isAvailableDay,
-        addAdminHours
+        addAdminHours,
+        cancelledHours,
+        setCancelledHours,
+        deleteCancelledHourAdmin,
+        getUpdatedCancelledHours,
       }}
     >
       {children}
