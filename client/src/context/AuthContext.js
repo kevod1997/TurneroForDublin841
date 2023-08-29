@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, verifyTokenRequest } from "../api/auth";
 import Cookies from "js-cookie";
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 
 export const AuthContext = createContext();
 

@@ -1,34 +1,34 @@
-import React, { useEffect } from 'react';
-import io from 'socket.io-client';
-import { useTurns } from '../../context/TurnContext';
+// import React, { useEffect } from 'react';
+// import io from 'socket.io-client';
+// import { useTurns } from '../../context/TurnContext';
 
-const Notification = () => {
-  const { createTurn } = useTurns();
+// const Notification = () => {
+//   const { createTurn } = useTurns();
 
-  useEffect(() => {
-      const socket = io('http://localhost:4000');
+//   useEffect(() => {
+//       const socket = io('http://localhost:4000');
 
-      socket.on('connect', () => {
-        console.log('Admin conectado');
-      });
+//       socket.on('connect', () => {
+//         console.log('Admin conectado');
+//       });
 
-      socket.on('newTurnCreated', (newTurn) => {
-        // Aquí puedes mostrar una notificación o actualizar la lista de turnos
-        console.log('Nuevo turno creado:', newTurn);
-      });
+//       socket.on('newTurnCreated', (newTurn) => {
+//         // Aquí puedes mostrar una notificación o actualizar la lista de turnos
+//         console.log('Nuevo turno creado:', newTurn);
+//       });
 
-      return () => {
-        socket.disconnect();
-      };
+//       return () => {
+//         socket.disconnect();
+//       };
 
-  }, [createTurn]);
+//   }, [createTurn]);
 
-  return (
-    <div>
+//   return (
+//     <div>
       
-    </div>
+//     </div>
 
-  );
-};
+//   );
+// };
 
-export default Notification;
+// export default Notification;

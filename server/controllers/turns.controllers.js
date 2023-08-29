@@ -5,7 +5,7 @@ import { availablesHours, isHourAvailable } from "../utils/hours.js";
 import { getAvailableTurns, updateTurnAvailability } from "../utils/turns.js";
 import es from "date-fns/locale/es/index.js";
 import { isDateInPast, isTurnInPast } from "../utils/date.js";
-import socketHandler from "../libs/socketHandler.js";
+// import socketHandler from "../libs/socketHandler.js";
 
 export const getTurn = async (req, res) => {
   try {

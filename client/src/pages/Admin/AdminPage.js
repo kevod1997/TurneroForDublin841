@@ -3,7 +3,7 @@ import DayTurnsComponent from "../../components/Admin/Turns/DayTurnsComponent";
 import { useAuth } from "../../context/AuthContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import Notification from "../../components/Admin/Notification";
+// import Notification from "../../components/Admin/Notification";
 import CancelledDays from "../../components/Admin/Days/CancelledDays";
 import CancelledHours from "../../components/Admin/Hours/CancelledHours";
 
@@ -47,7 +47,7 @@ const AdminPage = () => {
     <div className="flex-col  bg-slate-100">
       <div className="p-4 flex justify-center">
         <p className="text-2xl font-bold text-center">Dashboard Dublin841</p>
-        <Notification />
+        {/* <Notification /> */}
         <button
           onClick={handleLogout}
           className="bg-red-500 hover:bg-red-600 text-white font-semibold px-2.5 rounded-full focus:outline-none focus:ring-2 focus:ring-red-600 items-end ml-4"

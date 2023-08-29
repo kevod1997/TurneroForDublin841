@@ -10,7 +10,7 @@ import {
   getCancelledHours,
   getTurnsByDateAdmin,
 } from "../api/admin";
-import { format, getDay, isSameDay, set } from "date-fns";
+import { format, getDay, isSameDay } from "date-fns";
 
 export const adminContext = createContext();
 
