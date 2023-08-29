@@ -52,7 +52,7 @@ function Turnos() {
     setSelectedDay();
     setSelectedTime();
     setStartDate();
-    setSelectedPeriod();
+    setSelectedPeriod('morning');
     reset();
   });
 

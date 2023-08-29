@@ -14,7 +14,7 @@ export const TurnProvider = ({ children }) => {
   const [turns, setTurns] = useState([]);
   const [turnError, setTurnError] = useState();
   const [startDate, setStartDate] = useState();
-  const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [selectedPeriod, setSelectedPeriod] = useState("morning");
 
   useEffect(() => {
     if (startDate) {

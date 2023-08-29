@@ -11,13 +11,12 @@ const AdminPage = () => {
   const MySwal = withReactContent(Swal);
   const { logout } = useAuth();
   const options = [
-    { label: "Seleccionar opción", component: null },
     { label: "Ver turnos por dia", component: <DayTurnsComponent /> },
     { label: "Cancelar Dias", component: <CancelledDays /> },
     { label: "Cancelar Horas", component: <CancelledHours /> },
   ];
 
-  const [selectedComponent, setSelectedComponent] = useState(null);
+  const [selectedComponent, setSelectedComponent] = useState(<DayTurnsComponent />);
 
   const handleOptionChange = (component) => {
     setSelectedComponent(component);
