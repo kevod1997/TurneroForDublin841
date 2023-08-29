@@ -52,7 +52,6 @@ export const TurnProvider = ({ children }) => {
     }
   };
 
-  console.log(turns);
   return (
     <turnContext.Provider
       value={{

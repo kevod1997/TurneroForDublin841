@@ -78,7 +78,7 @@ function Turnos() {
   }, [errors, clearErrors, onSubmit]);
 
   const whatsappRegex = /^(\+[0-9]{1,3})?[0-9]{9,}$/;
-  console.log(errors);
+
 
   return (
     <div className="flex flex-col m-4">
