@@ -20,7 +20,7 @@ export const login = async (req, res) => {
   
       const token = await creteAccessToken({ id: username.id });
   
-      res.cookie("token", token, { sameSite: 'none', secure: true });
+      res.cookie("token", token, { sameSite: 'none', secure: true, domain: "dublin841-nrev-dev.fl0.io" });
       res.json({
         id: user.id,
         username: user.username,

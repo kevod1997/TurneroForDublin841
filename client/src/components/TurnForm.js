@@ -39,7 +39,7 @@ const Turnos = ({
         }
       })
     : [];
-
+      console.log(filteredTimes, turns);
 
   return (
     <>
@@ -55,7 +55,7 @@ const Turnos = ({
         ) : (
           ""
         )}
-        {selectedDay && !selectedTime && !turnError ? (
+        {selectedDay && !selectedTime && !turnError && filteredTimes.length > 0 ? (
           <div className="border rounded">
             <p className="m-4 text-center text-red-600 font-bold">
               Por favor elegi un horario.
@@ -75,7 +75,7 @@ const Turnos = ({
         )}
       </div>
       <div className="mb-4">
-      {!turnError && startDate && (
+      {!turnError && startDate && turns.length > 0 && (
   <>
     <div className="flex items-center mb-4">
       <p className="text-lg font-medium leading-normal text-gray-800 ml-3 ">

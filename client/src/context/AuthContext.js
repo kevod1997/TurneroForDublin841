@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (admin) => {
     try {
       const res = await loginRequest(admin);
+      console.log(res);
       setIsAuthenticated(true);
       setAdmin(res.data);
     } catch (error) {

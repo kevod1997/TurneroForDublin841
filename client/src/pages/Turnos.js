@@ -7,15 +7,15 @@ import {
 } from "@material-tailwind/react";
 import Modal from "../components/Modal";
 import { useTurns } from "../context/TurnContext";
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { addDays, format } from "date-fns";
 import es from "date-fns/locale/es/index";
 
 function Turnos() {
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
-  const MySwal = withReactContent(Swal)
+  const MySwal = withReactContent(Swal);
 
   const {
     register,
@@ -42,17 +42,23 @@ function Turnos() {
       hour: selectedTime,
       service: data.service,
     };
-    createTurn(turn)
+    createTurn(turn);
     MySwal.fire({
-      icon: 'success',
-      title: `Has solicitado un turno para el ${format(addDays(new Date(turn.date), 1), "d 'de' MMMM", {locale: es})} a las ${turn.hour}, por favor en caso de no poder asistar avisanos con anticipación.`,
+      icon: "success",
+      title: `Has solicitado un turno para el ${format(
+        addDays(new Date(turn.date), 1),
+        "d 'de' MMMM",
+        { locale: es }
+      )} a las ${
+        turn.hour
+      }, por favor en caso de no poder asistar avisanos con anticipación.`,
       showConfirmButton: true,
-      timer: 10000
-    })
+      timer: 10000,
+    });
     setSelectedDay();
     setSelectedTime();
     setStartDate();
-    setSelectedPeriod('morning');
+    setSelectedPeriod("morning");
     reset();
   });
 
@@ -78,7 +84,6 @@ function Turnos() {
   }, [errors, clearErrors, onSubmit]);
 
   const whatsappRegex = /^(\+[0-9]{1,3})?[0-9]{9,}$/;
-
 
   return (
     <div className="flex flex-col m-4">
@@ -219,8 +224,12 @@ function Turnos() {
               </PopoverContent>
             </Popover>
             <button
-              className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 font-bold text-white shadow-lg shadow-green-200 transition ease-in-out duration-200 translate-10"
-              type="submit"
+            className={`px-4 py-2 rounded-lg ${
+              selectedTime && selectedDay
+                ? "bg-green-600 hover:bg-green-500 animate-pulse-scale"
+                : "bg-stone-400 hover:bg-stone-500"
+            } font-bold text-white shadow-lg shadow-stone-200 transition ease-in-out duration-200 translate-10`}
+            type="submit"
             >
               Saca tu turno
             </button>
