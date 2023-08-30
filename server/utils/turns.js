@@ -78,7 +78,8 @@ export const updateTurnAvailability  = (parsedDate, turns) => {
   const currentDateString = format(parsedDate, 'yyyy-MM-dd');
   
   const updatedAvailableTurns = turns.availableTurns.filter((turn) => {
-    const turnTime = subHours(parseISO(`${currentDateString}T${turn}`), 3); // Restar 3 horas al turno
+    // const turnTime = subHours(parseISO(`${currentDateString}T${turn}`), 3); // Restar 3 horas al turno
+    const turnTime = parseISO(`${currentDateString}T${turn}`);
     return isBefore(currentDate, turnTime);
   });
   const updatedNotAvailableTurns = [
