@@ -27,6 +27,7 @@ export const login = async (req, res) => {
       secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+      domain: '.dublin841.shop'
     };
     
     // Configurar la cookie para el dominio actual
