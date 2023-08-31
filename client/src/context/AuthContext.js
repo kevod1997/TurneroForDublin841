@@ -49,9 +49,6 @@ export const AuthProvider = ({ children }) => {
     }, [authError])
 
     useEffect(() => {
-      console.log('render');
-      console.log(Cookies.get());
-      console.log(admin);
       async function checkLogin() {
         const cookies = Cookies.get();
         console.log(cookies);

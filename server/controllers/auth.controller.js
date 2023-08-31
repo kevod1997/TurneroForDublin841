@@ -34,6 +34,7 @@ export const login = async (req, res) => {
       sameSite: "none",
       secure: true,
       domain: ".localhost:3000",
+      path: "/admin",
     });
 
     // Para el dominio del sitio de producción
@@ -41,6 +42,7 @@ export const login = async (req, res) => {
       sameSite: "none",
       secure: true,
       domain: ".dublin841.shop",
+      path: "/admin",
     });
     res.json({
       id: user.id,

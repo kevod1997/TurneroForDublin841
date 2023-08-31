@@ -6,7 +6,6 @@ export function creteAccessToken(payload) {
         jwt.sign(
             payload,
             TOKEN_SECRET,
-            
            (err, token) => {
             if(err) reject(err);
             resolve(token);
