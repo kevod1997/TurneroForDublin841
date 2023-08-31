@@ -34,7 +34,6 @@ export const login = async (req, res) => {
       sameSite: "none",
       secure: true,
       domain: ".localhost:3000",
-      path: "/admin",
     });
 
     // Para el dominio del sitio de producción
