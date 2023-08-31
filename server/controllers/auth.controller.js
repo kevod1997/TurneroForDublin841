@@ -22,19 +22,15 @@ export const login = async (req, res) => {
 
     const token = await creteAccessToken({ id: username.id });
 
-    const cookieOptions = {
-      sameSite: 'none',
+    res.cookie('token', token, {
+      domain: '.dublin841-nrev-dev.fl0.io',
+      path: '/admin',
       secure: true,
       httpOnly: true,
+      sameSite: 'none',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-      domain: '.dublin841.shop'
-    };
+    });
     
-    // Configurar la cookie para el dominio actual
-    res.cookie('token', token, { ...cookieOptions, path:'/admin' });
-    
-    // También podrías considerar configurar la cookie para subdominios si es necesario
-    // res.cookie('token', token, { ...cookieOptions, domain: '.example.com' });
 
     res.json({
       id: user.id,
