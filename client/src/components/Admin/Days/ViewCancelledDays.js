@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAdmin } from "../../../context/AdminContext";
 import { format, parseISO, getDay } from "date-fns";
 import { isAfter } from "date-fns";
-import { subDays } from "date-fns";
+// import { subDays } from "date-fns";
 
 const ViewCancelledDays = () => {
   const {
@@ -18,11 +18,12 @@ const ViewCancelledDays = () => {
   }, [cancelledDays]);
 
   const filterAndSortCancelledDays = (days) => {
-    const yesterday = subDays(new Date(), 1);
+    // const yesterday = subDays(new Date(), 1);
+    const today = (new Date())
 
     const filteredCancelledDays = days.filter((day) => {
       const cancelDate = parseISO(day.date);
-      return isAfter(cancelDate, yesterday);
+      return isAfter(cancelDate, today);
     });
 
     const sortedCancelledDays = filteredCancelledDays.sort((a, b) => {

@@ -23,13 +23,12 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (admin) => {
     try {
       const res = await loginRequest(admin);
-      Cookies.set("token", res.data.token, {
-        expires: 7,
-        path: "/",
-        domain: ".dublin841-nrev-dev.fl0.io",
-        secure: true,
-        sameSite: "none",
-      });
+      console.log(res);
+      const token = res.data.token;
+      console.log(token);
+
+    // Configurar la cookie manualmente
+    document.cookie = `token=${token}; expires=${new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toUTCString()}; secure; samesite=none`;
       setIsAuthenticated(true);
       setAdmin(res.data);
     } catch (error) {
@@ -41,7 +40,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    // Cookies.remove("token");
+    // Remover la cookie manualmente al cerrar sesión
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; samesite=none;';
     setIsAuthenticated(false);
     setAdmin(null);
     };

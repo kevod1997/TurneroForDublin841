@@ -4,12 +4,12 @@ export function isTurnInPast(parsedDate, hour) {
   // Parsear la fecha del turno y la hora del turno a objetos Date
   const [hours, minutes] = hour.split(":");
   const parsedTurnHour = setMinutes(setHours(parsedDate, hours), minutes);
-  const turnHour = subHours(parsedTurnHour, 3);
+  // const turnHour = subHours(parsedTurnHour, 3);
   const currentDate = subHours(new Date(), 3);
-  console.log(turnHour, currentDate);
+  console.log(parsedTurnHour, currentDate);
 
   // Verificar si la fecha y hora del turno son anteriores al inicio del minuto actual
-  const isTurnInPast = turnHour > currentDate;
+  const isTurnInPast = parsedTurnHour > currentDate;
   console.log(isTurnInPast);
   return isTurnInPast;
 }
