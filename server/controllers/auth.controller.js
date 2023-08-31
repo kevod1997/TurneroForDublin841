@@ -26,21 +26,21 @@ export const login = async (req, res) => {
     res.cookie("token", token, {
       sameSite: "none",
       secure: true,
-      domain: "https://dublin841-nrev-dev.fl0.io",
+      domain: ".dublin841-nrev-dev.fl0.io",
     });
 
     // Para el dominio del frontend en localhost
     res.cookie("token", token, {
       sameSite: "none",
       secure: true,
-      domain: "http://localhost:3000",
+      domain: ".localhost:3000",
     });
 
     // Para el dominio del sitio de producción
     res.cookie("token", token, {
       sameSite: "none",
       secure: true,
-      domain: "https://dublin841.shop",
+      domain: ".dublin841.shop",
     });
     res.json({
       id: user.id,
