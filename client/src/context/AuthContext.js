@@ -23,6 +23,13 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (admin) => {
     try {
       const res = await loginRequest(admin);
+      Cookies.set("token", res.data.token, {
+        expires: 7,
+        path: "/",
+        domain: ".dublin841-nrev-dev.fl0.io",
+        secure: true,
+        sameSite: "none",
+      });
       setIsAuthenticated(true);
       setAdmin(res.data);
     } catch (error) {
