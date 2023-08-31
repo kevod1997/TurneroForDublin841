@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (admin) => {
     try {
       const res = await loginRequest(admin);
-      console.log(res);
       setIsAuthenticated(true);
       setAdmin(res.data);
     } catch (error) {
@@ -50,6 +49,9 @@ export const AuthProvider = ({ children }) => {
     }, [authError])
 
     useEffect(() => {
+      console.log('render');
+      console.log(Cookies.get());
+      console.log(admin);
       async function checkLogin() {
         const cookies = Cookies.get();
         console.log(cookies);
