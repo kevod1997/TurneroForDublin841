@@ -22,27 +22,19 @@ export const login = async (req, res) => {
 
     const token = await creteAccessToken({ id: username.id });
 
-    // Para el dominio del backend
-    // res.cookie("token", token, {
-    //   sameSite: "none",
-    //   secure: true,
-    //   domain: ".dublin841-nrev-dev.fl0.io",
-    // });
-
-    // Para el dominio del frontend en localhost
-    res.cookie("token", token, {
-      sameSite: "none",
+    const cookieOptions = {
+      sameSite: 'none',
       secure: true,
-      domain: ".localhost:3000",
-    });
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    };
+    
+    // Configurar la cookie para el dominio actual
+    res.cookie('token', token, { ...cookieOptions, path:'/admin' });
+    
+    // También podrías considerar configurar la cookie para subdominios si es necesario
+    // res.cookie('token', token, { ...cookieOptions, domain: '.example.com' });
 
-    // Para el dominio del sitio de producción
-    res.cookie("token", token, {
-      sameSite: "none",
-      secure: true,
-      domain: ".dublin841.shop",
-      path: "/admin",
-    });
     res.json({
       id: user.id,
       username: user.username,
