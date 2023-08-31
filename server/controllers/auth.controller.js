@@ -23,11 +23,11 @@ export const login = async (req, res) => {
     const token = await creteAccessToken({ id: username.id });
 
     // Para el dominio del backend
-    res.cookie("token", token, {
-      sameSite: "none",
-      secure: true,
-      domain: ".dublin841-nrev-dev.fl0.io",
-    });
+    // res.cookie("token", token, {
+    //   sameSite: "none",
+    //   secure: true,
+    //   domain: ".dublin841-nrev-dev.fl0.io",
+    // });
 
     // Para el dominio del frontend en localhost
     res.cookie("token", token, {
