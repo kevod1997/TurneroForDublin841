@@ -24,7 +24,6 @@ export const login = async (req, res) => {
 
     res.cookie("token", token, {
       domain: ".dublin841-nrev-dev.fl0.io",
-      path: "/admin", // Ajusta la ruta según tu estructura de URL
       secure: true,
       httpOnly: true,
       sameSite: "none",
