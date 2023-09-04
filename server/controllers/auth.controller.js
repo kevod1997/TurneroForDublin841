@@ -22,20 +22,19 @@ export const login = async (req, res) => {
 
     const token = await creteAccessToken({ id: username.id });
 
-    res.cookie('token', token, {
-      domain: '.dublin841-nrev-dev.fl0.io',
-      path: '/admin',
+    res.cookie("token", token, {
+      domain: ".dublin841-nrev-dev.fl0.io",
+      path: "/admin",
       secure: true,
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
     });
-    
 
     res.json({
       id: user.id,
       username: user.username,
-      token: token
+      token: token,
     });
     console.log(token);
   } catch (error) {
@@ -54,17 +53,17 @@ export const verifyToken = async (req, res) => {
   const { token } = req.cookies;
 
   const adminUser = user;
-
-  if (!token) return res.status(401).json({ message: "Unauthorized by lack of token" });
-  console.log('adminUser: '+ adminUser);
   console.log(token);
+  if (!token)
+    return res.status(401).json({ message: "Unauthorized by lack of token" });
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
-    console.log(err);
-    console.log('user: '+ user);
     if (err) return res.status(401).json({ message: "Error: Unauthorized" });
 
-    if (!adminUser.id) return res.status(401).json({ message: "Error: Unauthorized by lack of user" });
+    if (!adminUser.id)
+      return res
+        .status(401)
+        .json({ message: "Error: Unauthorized by lack of user" });
 
     return res.json({
       id: adminUser.id,
