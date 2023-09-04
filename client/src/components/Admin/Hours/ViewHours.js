@@ -16,6 +16,10 @@ const ViewHours = () => {
 
 
   const filterAndSortCancelledHours = (days) => {
+    console.log(days);
+    if (!Array.isArray(days)) {
+      return; 
+    }
     const yesterday = subDays(new Date(), 1);
 
     const filteredCancelledDays = days.filter((day) => {
@@ -90,7 +94,7 @@ const ViewHours = () => {
           Habilitar horas selecionadas
         </button>
       </div>
-      {sortedCancelledHours.length === 0 ? (
+      {sortedCancelledHours === Object ? (
         <div className="flex justify-center">
           <p className="text-xl text-gray-700">No hay horas canceladas</p>
         </div>
@@ -103,13 +107,13 @@ const ViewHours = () => {
                 <th className="text-center">Inicio</th>
                 <th className="text-center">Fin</th>
                 <th className="text-center">
-                  <input
+                 {selectedHours === Array && <input
                     type="checkbox"
                     checked={
                       selectedHours.length === sortedCancelledHours.length
                     }
                     onChange={() => toggleSelectAll()}
-                  />
+                  />}
                 </th>
               </tr>
             </thead>
