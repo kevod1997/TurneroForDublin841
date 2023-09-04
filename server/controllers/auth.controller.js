@@ -55,16 +55,16 @@ export const verifyToken = async (req, res) => {
 
   const adminUser = user;
 
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  if (!token) return res.status(401).json({ message: "Unauthorized by lack of token" });
+  console.log('adminUser: '+ adminUser);
+  console.log(token);
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
     console.log(err);
     console.log('user: '+ user);
-    console.log('adminUser: '+ adminUser);
-    console.log(token);
-    if (err) return res.status(401).json({ message: "Unauthorized" });
+    if (err) return res.status(401).json({ message: "Error: Unauthorized" });
 
-    if (!adminUser.id) return res.status(401).json({ message: "Unauthorized" });
+    if (!adminUser.id) return res.status(401).json({ message: "Error: Unauthorized by lack of user" });
 
     return res.json({
       id: adminUser.id,
