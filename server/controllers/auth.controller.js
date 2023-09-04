@@ -58,6 +58,10 @@ export const verifyToken = async (req, res) => {
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
+    console.log(err);
+    console.log('user: '+ user);
+    console.log('adminUser: '+ adminUser);
+    console.log(token);
     if (err) return res.status(401).json({ message: "Unauthorized" });
 
     if (!adminUser.id) return res.status(401).json({ message: "Unauthorized" });
