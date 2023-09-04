@@ -10,7 +10,7 @@ import {
   getCancelledHours,
   getTurnsByDateAdmin,
 } from "../api/admin";
-import { format, getDay, isSameDay } from "date-fns";
+import { addHours, format, getDay, isSameDay } from "date-fns";
 
 export const adminContext = createContext();
 
@@ -112,6 +112,7 @@ export const AdminProvider = ({ children }) => {
   const getUpdatedCancelledDays = async () => {
     try {
       const daysData = await getDaysAdmin();
+      console.log(daysData);
       setCancelledDays(daysData);
     } catch (error) {
       console.log(error);
@@ -188,7 +189,6 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-
   //utils
   const isAvailableDay = (dates) => {
     const day = getDay(dates);
@@ -200,9 +200,11 @@ export const AdminProvider = ({ children }) => {
     }
 
     // Comprueba si la fecha está en la lista de días cancelados
-    const isCancelled = cancelledDays.some((cancelledDate) =>
-      isSameDay(new Date(cancelledDate.date), currentDate)
-    );
+    const isCancelled = cancelledDays.some((cancelledDate) => {
+      const cancelledDateUpdated = addHours(new Date(cancelledDate.date), 3);
+      console.log(cancelledDateUpdated);
+      return isSameDay(cancelledDateUpdated, currentDate);
+    });
 
     return !isCancelled;
   };

@@ -1,33 +1,33 @@
 import { useEffect, useState } from "react";
 import { useAdmin } from "../../../context/AdminContext";
-import { format, parseISO, getDay } from "date-fns";
+import { format, parseISO, getDay, addHours, addDays, subDays } from "date-fns";
 import { isAfter } from "date-fns";
 // import { subDays } from "date-fns";
 
 const ViewCancelledDays = () => {
-  const {
-    cancelledDays,
-    deleteDayAdmin,
-    setCancelledDays,
-  } = useAdmin();
+  const { cancelledDays, deleteDayAdmin, setCancelledDays } = useAdmin();
   const [selectedDays, setSelectedDays] = useState([]);
 
   useEffect(() => {
     filterAndSortCancelledDays(cancelledDays);
-    console.log('render');
+    console.log("render");
   }, [cancelledDays]);
 
   const filterAndSortCancelledDays = (days) => {
-    // const yesterday = subDays(new Date(), 1);
-    const today = (new Date())
+    console.log(days);
+    const yesterday = subDays(new Date(), 1);
 
     const filteredCancelledDays = days.filter((day) => {
-      const cancelDate = parseISO(day.date);
-      return isAfter(cancelDate, today);
+      const cancelDate = addHours(parseISO(day.date), 3);
+      console.log(cancelDate);
+      return isAfter(cancelDate, yesterday);
     });
 
     const sortedCancelledDays = filteredCancelledDays.sort((a, b) => {
-      return new Date(a.date) - new Date(b.date);
+      const dateA = addHours(new Date(a.date), 3);
+      const dateB = addHours(new Date(b.date), 3);
+      console.log(dateA, dateB);
+      return dateA - dateB;
     });
 
     return sortedCancelledDays;
@@ -38,7 +38,11 @@ const ViewCancelledDays = () => {
       for (const selectedDay of selectedDays) {
         await deleteDayAdmin(selectedDay._id);
       }
-      alert(`Volviste a habilitar los dias: ${selectedDays.map((day) => format(parseISO(day.date), "dd/MM/yyyy"))}`)
+      alert(
+        `Volviste a habilitar los dias: ${selectedDays.map((day) =>
+          format(parseISO(day.date), "dd/MM/yyyy")
+        )}`
+      );
       // Actualizar el estado de los días cancelados después de eliminarlos
       setCancelledDays((prevCancelledDays) =>
         prevCancelledDays.filter(
@@ -85,6 +89,7 @@ const ViewCancelledDays = () => {
   };
 
   const sortedCancelledDays = filterAndSortCancelledDays(cancelledDays);
+  console.log(sortedCancelledDays);
 
   return (
     <>
@@ -119,23 +124,27 @@ const ViewCancelledDays = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedCancelledDays.map((day, index) => (
-                <tr key={index} className="border-t border-gray-300">
-                  <td className="px-4 py-4 text-center">
-                    {format(parseISO(day.date), "dd-MM-yyyy")}
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    {getDayOfWeek(day.date)}
-                  </td>
-                  <td className="text-center px-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedDays.includes(day)}
-                      onChange={() => toggleSelectDay(day)}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {sortedCancelledDays.map((day, index) => {
+                const dateWithExtraDay = addDays(parseISO(day.date), 1); // Agregar un día a la fecha
+                return (
+                  <tr key={index} className="border-t border-gray-300">
+                    <td className="px-4 py-4 text-center">
+                      {format(dateWithExtraDay, "dd-MM-yyyy")}{" "}
+                      {/* Usar la fecha ajustada */}
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      {getDayOfWeek(dateWithExtraDay)}
+                    </td>
+                    <td className="text-center px-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedDays.includes(day)}
+                        onChange={() => toggleSelectDay(day)}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

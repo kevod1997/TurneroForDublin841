@@ -15,7 +15,7 @@ export const getCancelledHours = async (req, res) => {
   try {
     const cancelledHours = await CancelledHours.find();
     if (cancelledHours.length === 0) {
-      return res.status(404).json({ message: "No hay horas canceladas" });
+      return res.json({ message: "No hay horas canceladas" });
     }
     return res.json(cancelledHours);
   } catch (error) {
