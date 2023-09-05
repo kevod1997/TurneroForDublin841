@@ -53,8 +53,8 @@ export const verifyToken = async (req, res) => {
 
   const adminUser = user;
   console.log(token);
-  // if (!token)
-  //   return res.status(401).json({ message: "Unauthorized by lack of token" });
+  if (!token)
+    return res.status(401).json({ message: "Unauthorized by lack of token" });
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
     console.log(user);

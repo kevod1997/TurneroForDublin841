@@ -35,6 +35,7 @@ const ViewHours = () => {
   };
 
   const sortedCancelledHours = filterAndSortCancelledHours(cancelledHours);
+  console.log(sortedCancelledHours);
 
   const handleDelete = async () => {
     try {
@@ -94,7 +95,7 @@ const ViewHours = () => {
           Habilitar horas selecionadas
         </button>
       </div>
-      {sortedCancelledHours === Object ? (
+      {sortedCancelledHours === undefined ? (
         <div className="flex justify-center">
           <p className="text-xl text-gray-700">No hay horas canceladas</p>
         </div>

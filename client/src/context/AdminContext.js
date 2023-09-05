@@ -202,7 +202,6 @@ export const AdminProvider = ({ children }) => {
     // Comprueba si la fecha está en la lista de días cancelados
     const isCancelled = cancelledDays.some((cancelledDate) => {
       const cancelledDateUpdated = addHours(new Date(cancelledDate.date), 3);
-      console.log(cancelledDateUpdated);
       return isSameDay(cancelledDateUpdated, currentDate);
     });
 
