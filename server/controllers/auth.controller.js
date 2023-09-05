@@ -43,7 +43,11 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   res.cookie("token", "", {
+    domain: ".dublin841-nrev-dev.fl0.io", // Usar el mismo dominio
     expires: new Date(0),
+    secure: true, // Debe coincidir con la configuración de la cookie
+    httpOnly: true, // Debe coincidir con la configuración de la cookie
+    sameSite: "none", // Debe coincidir con la configuración de la cookie
   });
   return res.sendStatus(200);
 };

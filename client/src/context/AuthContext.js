@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     // Cookies.remove("token");
     // Remover la cookie manualmente al cerrar sesión
-    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/admin; secure; samesite=none;';
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;  secure; samesite=none;';
     setIsAuthenticated(false);
     setAdmin(null);
     };

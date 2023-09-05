@@ -39,7 +39,6 @@ const Turnos = ({
         }
       })
     : [];
-      console.log(filteredTimes, turns);
 
   return (
     <>
