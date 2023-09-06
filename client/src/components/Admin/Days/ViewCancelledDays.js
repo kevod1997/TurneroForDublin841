@@ -7,6 +7,7 @@ import { isAfter } from "date-fns";
 const ViewCancelledDays = () => {
   const { cancelledDays, deleteDayAdmin, setCancelledDays } = useAdmin();
   const [selectedDays, setSelectedDays] = useState([]);
+  
 
   useEffect(() => {
     filterAndSortCancelledDays(cancelledDays);

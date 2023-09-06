@@ -70,18 +70,7 @@ export const AdminProvider = ({ children }) => {
 
   //como puedo hacer para que esto se monte en el componente correspondiente sin tener que pasarle por las dependencias que estan en el contexto.
 
-  useEffect(() => {
-    (async () => {
-      const daysData = await getDaysAdmin();
-      if (Array.isArray(daysData)) {
-        setDayError(null);
-        setCancelledDays(daysData);
-      } else {
-        setCancelledDays([]);
-        setDayError(daysData);
-      }
-    })();
-  }, []);
+
 
   const getDaysAdmin = async () => {
     try {
@@ -246,6 +235,7 @@ export const AdminProvider = ({ children }) => {
         setCancelledHours,
         deleteCancelledHourAdmin,
         getUpdatedCancelledHours,
+        setDayError
       }}
     >
       {children}

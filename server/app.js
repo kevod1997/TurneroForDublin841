@@ -15,7 +15,7 @@ app.use(
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: ["http://localhost:3000", "https://dublin841.shop"],
+    origin: ["http://localhost:3000", "https://dublin841.shop", "https://www.dublin841.shop"],
   })
 );
 app.use(express.json());

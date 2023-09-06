@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { loginRequest, verifyTokenRequest } from "../api/auth";
+import { loginRequest, logoutRequest, verifyTokenRequest } from "../api/auth";
 import Cookies from "js-cookie";
 // import io from 'socket.io-client';
 
@@ -43,8 +43,17 @@ export const AuthProvider = ({ children }) => {
     // Cookies.remove("token");
     // Remover la cookie manualmente al cerrar sesión
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;  secure; samesite=none;';
+    // Hacer la solicitud al backend para cerrar la sesión
+  logoutRequest()
+  .then(() => {
+    // La sesión se ha cerrado correctamente en el backend
     setIsAuthenticated(false);
     setAdmin(null);
+  })
+  .catch((error) => {
+    // Manejar errores si la solicitud al backend falla
+    console.error('Error al cerrar la sesión:', error);
+  });
     };
 
     useEffect(()=> {

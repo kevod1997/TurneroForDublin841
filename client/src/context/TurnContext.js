@@ -35,16 +35,17 @@ export const TurnProvider = ({ children }) => {
     try {
       const res = await createTurnRequest(turn);
       console.log(res);
+      return res;
     } catch (error) {
-      console.log(error);
+      const res = error;
+      console.log(res);
+      return res;
     }
   };
 
   const getTurns = async (date) => {
     try {
-      console.log(date);
       const formattedDate = format(date, "yyyy-MM-dd"); // Formatea la fecha como lo necesites para la solicitud
-      console.log(formattedDate);
       const res = await getTurnsByDate(formattedDate);
       return res.data;
     } catch (error) {

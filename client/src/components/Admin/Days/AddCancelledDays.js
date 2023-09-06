@@ -17,9 +17,11 @@ const AddCancelledDays = () => {
     endDate,
     setEndDate,
     addDayAdmin,
-    cancelledDays,
     getUpdatedCancelledDays,
     isAvailableDay,
+    getDaysAdmin,
+    setCancelledDays,
+    setDayError,
   } = useAdmin();
 
   const onSubmit = handleSubmit(async (dates) => {
@@ -41,6 +43,19 @@ const AddCancelledDays = () => {
       console.error(error);
     }
   });
+
+  useEffect(() => {
+    (async () => {
+      const daysData = await getDaysAdmin();
+      if (Array.isArray(daysData)) {
+        setDayError(null);
+        setCancelledDays(daysData);
+      } else {
+        setCancelledDays([]);
+        setDayError(daysData);
+      }
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -83,7 +98,7 @@ const AddCancelledDays = () => {
             Seleciona la fecha de fin(puede ser el mismo u otro dia)
           </p>
         )}
-                {!startDate && !endDate && (
+        {!startDate && !endDate && (
           <p className="text-center mt-2 text-bold text-xs">
             Seleciona una fecha de inicio y de fin(el dia puede coincidir)
           </p>
@@ -144,7 +159,9 @@ const AddCancelledDays = () => {
         <div className="flex justify-center">
           <button
             className={`px-4 py-2 mt-4 rounded-lg ${
-              isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-500'
+              isButtonDisabled
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-500"
             } font-bold text-white shadow-lg shadow-green-200 transition ease-in-out duration-200 translate-10`}
             type="submit"
             disabled={isButtonDisabled}

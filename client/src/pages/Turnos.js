@@ -24,7 +24,11 @@ function Turnos() {
     clearErrors,
     formState: { errors },
   } = useForm();
-  const { createTurn, setStartDate, setSelectedPeriod } = useTurns();
+  const {
+    createTurn,
+    setStartDate,
+    setSelectedPeriod,
+  } = useTurns();
 
   const handleSelectedTime = (time) => {
     setSelectedTime(time);
@@ -34,7 +38,7 @@ function Turnos() {
     setSelectedDay(date);
   };
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const turn = {
       name: data.name,
       phone: data.phone,
@@ -42,19 +46,27 @@ function Turnos() {
       hour: selectedTime,
       service: data.service,
     };
-    createTurn(turn);
-    MySwal.fire({
-      icon: "success",
-      title: `Has solicitado un turno para el ${format(
-        addDays(new Date(turn.date), 1),
-        "d 'de' MMMM",
-        { locale: es }
-      )} a las ${
-        turn.hour
-      }, por favor en caso de no poder asistar avisanos con anticipación.`,
-      showConfirmButton: true,
-      timer: 10000,
-    });
+    const response = await createTurn(turn);
+    if (response.request.status === 200) {
+      MySwal.fire({
+        icon: "success",
+        title: `Has solicitado un turno para el ${format(
+          addDays(new Date(turn.date), 1),
+          "d 'de' MMMM",
+          { locale: es }
+        )} a las ${
+          turn.hour
+        }, por favor en caso de no poder asistir avísanos con anticipación.`,
+        showConfirmButton: true,
+        timer: 10000,
+      });
+    } else if (response.response.status === 400) {
+      MySwal.fire({
+        icon: "error",
+        title: response.response.data.error,
+        showConfirmButton: true,
+      });
+    }
     setSelectedDay();
     setSelectedTime();
     setStartDate();
@@ -224,12 +236,12 @@ function Turnos() {
               </PopoverContent>
             </Popover>
             <button
-            className={`px-4 py-2 rounded-lg ${
-              selectedTime && selectedDay
-                ? "bg-green-600 hover:bg-green-500 animate-pulse-scale"
-                : "bg-stone-400 hover:bg-stone-500"
-            } font-bold text-white shadow-lg shadow-stone-200 transition ease-in-out duration-200 translate-10`}
-            type="submit"
+              className={`px-4 py-2 rounded-lg ${
+                selectedTime && selectedDay
+                  ? "bg-green-600 hover:bg-green-500 animate-pulse-scale"
+                  : "bg-stone-400 hover:bg-stone-500"
+              } font-bold text-white shadow-lg shadow-stone-200 transition ease-in-out duration-200 translate-10`}
+              type="submit"
             >
               Saca tu turno
             </button>
