@@ -15,6 +15,7 @@ import es from "date-fns/locale/es/index";
 function Turnos() {
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const MySwal = withReactContent(Swal);
 
   const {
@@ -39,6 +40,7 @@ function Turnos() {
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true)
     const turn = {
       name: data.name,
       phone: data.phone,
@@ -67,6 +69,7 @@ function Turnos() {
         showConfirmButton: true,
       });
     }
+    setIsSubmitting(false);
     setSelectedDay();
     setSelectedTime();
     setStartDate();
@@ -242,9 +245,15 @@ function Turnos() {
                   : "bg-stone-400 hover:bg-stone-500"
               } font-bold text-white shadow-lg shadow-stone-200 transition ease-in-out duration-200 translate-10`}
               type="submit"
+              disabled={isSubmitting}
             >
-              Saca tu turno
+  {isSubmitting ? (
+    "Solicitando turno..."
+  ) : (
+    "Saca tu turno"
+  )}
             </button>
+
           </div>
         </form>
       </div>

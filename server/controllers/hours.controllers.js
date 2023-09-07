@@ -27,10 +27,9 @@ export const getAvailableHours = async (req, res) => {
   try {
     const { date } = req.params; 
     console.log(date);
-    const adjustedDate = new Date(date); 
-    adjustedDate.setHours(adjustedDate.getHours() + 3)
-
-    const cancelledHours = await CancelledHours.find({ date: new Date(adjustedDate) });
+    const parsedDate = parseISO(date);
+    console.log(parsedDate);
+    const cancelledHours = await CancelledHours.find({ date: parsedDate });
     console.log(cancelledHours);
 
     const dayOfWeek = new Date(adjustedDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();

@@ -136,6 +136,7 @@ export const AdminProvider = ({ children }) => {
     try {
       console.log(date);
       const res = await getAvailableHours(date);
+      console.log(res);
       return res.data;
     } catch (error) {
       console.log(error);

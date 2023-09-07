@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useAdmin } from "../../../context/AdminContext";
-import { parseISO, subDays } from "date-fns";
+import { addHours, parseISO, subDays } from "date-fns";
 import { format } from "date-fns";
 import { isAfter } from "date-fns";
 
 const ViewHours = () => {
-  const { cancelledHours, setCancelledHours, deleteCancelledHourAdmin, getUpdatedCancelledHours } =
-    useAdmin();
+  const {
+    cancelledHours,
+    setCancelledHours,
+    deleteCancelledHourAdmin,
+    getUpdatedCancelledHours,
+  } = useAdmin();
   const [selectedHours, setSelectedHours] = useState([]);
 
   useEffect(() => {
-    console.log('render');
+    console.log("render");
     getUpdatedCancelledHours();
-    }, []);
-
+  }, []);
 
   const filterAndSortCancelledHours = (days) => {
     console.log(days);
     if (!Array.isArray(days)) {
-      return; 
+      return;
     }
     const yesterday = subDays(new Date(), 1);
 
@@ -108,33 +111,40 @@ const ViewHours = () => {
                 <th className="text-center">Inicio</th>
                 <th className="text-center">Fin</th>
                 <th className="text-center">
-                 {selectedHours === Array && <input
-                    type="checkbox"
-                    checked={
-                      selectedHours.length === sortedCancelledHours.length
-                    }
-                    onChange={() => toggleSelectAll()}
-                  />}
+                  {selectedHours === Array && (
+                    <input
+                      type="checkbox"
+                      checked={
+                        selectedHours.length === sortedCancelledHours.length
+                      }
+                      onChange={() => toggleSelectAll()}
+                    />
+                  )}
                 </th>
               </tr>
             </thead>
             <tbody>
-              {sortedCancelledHours.map((day, index) => (
-                <tr key={index} className="border-t border-gray-300">
-                  <td className="px-4 py-4 text-center">
-                    {format(parseISO(day.date), "dd-MM")}
-                  </td>
-                  <td className="px-4 py-4 text-center">{day.startHour}</td>
-                  <td className="px-4 py-4 text-center">{day.endHour}</td>
-                  <td className="text-center px-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedHours.includes(day)}
-                      onChange={() => toggleSelectHour(day)}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {sortedCancelledHours.map((day, index) => {
+                // Supongamos que 'day.date' es tu fecha inicial
+                const initialDate = parseISO(day.date);
+                const newDate = addHours(initialDate, 3);
+                const formattedDate = format(newDate, "dd-MM");
+
+                return (
+                  <tr key={index} className="border-t border-gray-300">
+                    <td className="px-4 py-4 text-center">{formattedDate}</td>
+                    <td className="px-4 py-4 text-center">{day.startHour}</td>
+                    <td className="px-4 py-4 text-center">{day.endHour}</td>
+                    <td className="text-center px-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedHours.includes(day)}
+                        onChange={() => toggleSelectHour(day)}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

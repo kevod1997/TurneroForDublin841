@@ -3,7 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { registerLocale } from "react-datepicker";
 import { format, isAfter } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAdmin } from "../../../context/AdminContext";
 registerLocale("es", es);
@@ -21,15 +21,20 @@ const Calendar = ({
 }) => {
   const [selectedTime, setSelectedTime] = useState();
   const { isAvailableDay, addAdminHours } = useAdmin();
+  console.log(pickDayForHours);
+  console.log(hours);
 
   const {
     register,
     handleSubmit,
-    clearErrors,
     reset,
     watch,
     formState: { errors },
   } = useForm();
+  useEffect(() => {
+    setHours([]);
+    setPickDayForHours("");
+  }, []);
 
   const onSubmit = handleSubmit(async (data) => {
     const hours = {
@@ -75,8 +80,8 @@ const Calendar = ({
         {selectedTime && (
           <div className="flex justify-center">
             <p className="text-center">Dia elegido:</p>
-            </div>
-            )}
+          </div>
+        )}
         <DatePicker
           placeholderText="Clickea aqui para elegir"
           selected={selectedTime}
