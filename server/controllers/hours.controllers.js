@@ -32,7 +32,7 @@ export const getAvailableHours = async (req, res) => {
     const cancelledHours = await CancelledHours.find({ date: parsedDate });
     console.log(cancelledHours);
 
-    const dayOfWeek = new Date(adjustedDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+    const dayOfWeek = parsedDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
     console.log(dayOfWeek);
     const allAvailableHours = availablesHours[dayOfWeek] || [];
 
