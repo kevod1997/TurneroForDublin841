@@ -1,8 +1,10 @@
 # Dublin841
 
 ## Capturas de Pantalla
-![Captura de Pantalla 1](https://i.ibb.co/GVYdRd1/791shots-so.png)
-![Captura de Pantalla 2](https://i.ibb.co/R7KydnM/938shots-so.png)
+<div style="display: flex; flex-direction: row;">
+  <img src="https://i.ibb.co/GVYdRd1/791shots-so.png" alt="Captura de Pantalla 1" width="400" />
+  <img src="https://i.ibb.co/R7KydnM/938shots-so.png" alt="Captura de Pantalla 2" width="400" />
+</div>
 
 ## Descripción
 Dublin841 es una aplicación web que utiliza React para el frontend y está estilizada con Tailwind y Bootstrap. En el backend, se ha implementado una API REST para manejar un sistema de gestión de turnos y un sistema para que el administrador pueda administrar los turnos, los días y las horas que trabaja. Además, utiliza MongoDB como base de datos.
@@ -28,6 +30,3 @@ Para desplegar esta aplicación, se utilizan los siguientes recursos:
 
 ## Implementación de WebSocket para Notificaciones al Administrador (TO-DO)
 - [ ] Implementar WebSocket para permitir notificaciones en tiempo real al administrador.
-
-<a href="https://ibb.co/RCrgcgM"><img src="https://i.ibb.co/GVYdRd1/791shots-so.png" alt="791shots-so" border="0"></a>
-<a href="https://ibb.co/jHYRsKx"><img src="https://i.ibb.co/R7KydnM/938shots-so.png" alt="938shots-so" border="0"></a>
