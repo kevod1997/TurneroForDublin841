@@ -1,29 +1,33 @@
 # [Dublin841](https://dublin841.shop/)
 
-## Descripción
-Dublin841 es una aplicación web que utiliza React para el frontend y está estilizada con Tailwind y Bootstrap. En el backend, se ha implementado una API REST para manejar un sistema de gestión de turnos y un sistema para que el administrador pueda administrar los turnos, los días y las horas que trabaja. Además, utiliza MongoDB como base de datos.
+## Description
+Dublin841 is a web application that uses React for the frontend and is styled with Tailwind and Bootstrap. In the backend, a REST API has been implemented to manage an appointment scheduling system and a system for the administrator to manage appointments, days, and working hours, using MongoDB as the database.
 
-## Funcionalidades
-- Sistema de gestión de turnos para usuarios.
-- Panel de administración para gestionar turnos, días y horas de trabajo.
-- Base de datos MongoDB para el almacenamiento de datos.
-- Interfaz amigable para el usuario con diseño responsive gracias a Tailwind y Bootstrap.
+## Features
+- Appointment management system for users.
+- Admin panel to manage appointments, days, and working hours.
+- MongoDB used as the database for data storage.
+- User-friendly interface with responsive design thanks to Tailwind and Bootstrap.
 
-## Tecnologías Utilizadas
+## Technologies
 - Frontend: React
-- Estilización: Tailwind y Bootstrap 
-- Backend: API REST(Node.js y Express)
-- Base de datos: MongoDB
+- Styling: Tailwind and Bootstrap
+- Backend: REST API (NodeJs and Express)
+- Database: MongoDB
 
-## Despliegue
-Para desplegar esta aplicación, se utilizan los siguientes recursos:
+## Deployment
+To deploy this application, the following resources are used:
 
 - **Frontend**: Hostinger
 - **Backend**: fl0
-- **Base de datos**: MongoAtlas
+- **Database**: MongoAtlas
 
-## Implementación de WebSocket para Notificaciones al Administrador (TO-DO)
-- [ ] Implementar WebSocket para permitir notificaciones en tiempo real al administrador.
+#### TO-DO
+
+| Features        | description                                                                  |
+| --------------- | ---------------------------------------------------------------------------- |
+| Notifications   |  Implement WebSocket to enable real-time notifications to the admin          |
+
 
 ## Capturas de Pantalla
 <div style="display: flex; flex-direction: row;">
